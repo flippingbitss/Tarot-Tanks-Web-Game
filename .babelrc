@@ -1,0 +1,4 @@
+{
+  "presets": [["es2015",{"modules": false}]],
+  "plugins": ["autobind-class-methods","transform-class-properties", "syntax-dynamic-import"]
+}

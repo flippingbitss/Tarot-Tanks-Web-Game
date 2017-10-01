@@ -1,0 +1,15 @@
+@import "variables";
+@import "footer";
+
+html {
+  font-family: Arial,sans-serif;
+}
+
+.clearfix {
+  clear: both;
+}
+
+
+#canvas {
+  border: 1px solid black;
+}
