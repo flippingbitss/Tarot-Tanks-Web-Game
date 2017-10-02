@@ -4,14 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
   <title><%= htmlWebpackPlugin.options.title %></title>
+  <link rel="shortcut icon" href="assets/images/island.png" type="image/x-icon">
   <% if (!htmlWebpackPlugin.options.MODE_DEV_SERVER) { %><link href="<%= webpack.assetsByChunkName['main'][1] %>" rel="stylesheet"><% } %>
 </head>
-<body class="babel">
+<body class="content-body">
 <!-- feel free to remove the following - except the script tags at the end -->
 
 
 
-<canvas id="canvas" width="640" height="480"></canvas>
+<canvas id="canvas" width="1280" height="720"></canvas>
 
 
 

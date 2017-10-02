@@ -1,8 +1,8 @@
 ### Install
 
 ```shell
-git clone https://github.com/topheman/webpack-babel-starter.git
-cd webpack-babel-starter
+git clone https://github.com/matharumanpreet00/Tarot-Tanks-Web-Game.git
+cd tarot-tanks-web-game
 npm install
 ```
 
