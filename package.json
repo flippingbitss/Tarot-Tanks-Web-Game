@@ -58,7 +58,6 @@
     "moment": "^2.11.2",
     "my-local-ip": "^1.0.0",
     "node-sass": "^4.5.3",
-    "npmlog": "^2.0.2",
     "pre-commit": "^1.1.2",
     "sass-loader": "^6.0.6",
     "serve": "^1.4.0",
@@ -70,7 +69,8 @@
   },
   "private": true,
   "dependencies": {
-    "createjs-module": "^0.8.2-beta"
+    "createjs-module": "^0.8.2-beta",
+    "npmlog": "^2.0.2"
   },
   "engines": {
     "npm": "^5.3.0",
