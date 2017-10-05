@@ -42,6 +42,10 @@ export class Player extends Bitmap {
       this.pos = this.pos.add(this.forward.scale(this.speed));
     }
 
+    for (let bullet of this.bullets) {
+      bullet.Update();
+    }
+
     this.stage.update();
   }
 
@@ -52,7 +56,7 @@ export class Player extends Bitmap {
   Move(e, dir, forward) {
     if (e.type == "keydown") {
       this.movement[dir] = true;
- this.forward = forward;
+      this.forward = forward;
     } else {
       this.movement[dir] = false;
     }
@@ -68,7 +72,7 @@ export class Player extends Bitmap {
       this.y,
       true,
       this.forward,
-      this.bullets.length - 1
+      this.bullets.length
     );
 
     this.stage.addChild(bullet);
@@ -77,18 +81,14 @@ export class Player extends Bitmap {
   }
 
   RemoveBullets(e, bullet) {
-    this.bullets.splice(bullet.index, 1);
+    this.bullets = this.bullets.filter(b => b.isAlive);
     this.stage.removeChild(bullet);
   }
 
   Main() {
     game.input.addMapping(37, e => this.Move(e, DIR.LEFT, Vector2.Left), false);
     game.input.addMapping(38, e => this.Move(e, DIR.UP, Vector2.Down), false);
-    game.input.addMapping(
-      39,
-      e => this.Move(e, DIR.RIGHT, Vector2.Right),
-      false
-    );
+    game.input.addMapping(39, e => this.Move(e, DIR.RIGHT, Vector2.Right), false);
     game.input.addMapping(40, e => this.Move(e, DIR.DOWN, Vector2.Up), false);
     game.input.addMapping(32, this.Shoot, true);
   }

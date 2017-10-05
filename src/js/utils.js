@@ -1,5 +1,7 @@
 /**
  * @export
+ * @author Manpreet Singh Matharu
+ * @description A small utils Vector2d class written in ES6
  * @class Vector2
  */
 export class Vector2 {

@@ -27,6 +27,7 @@ class Game {
     Ticker.framerate = 60;
     Ticker.timingMode = Ticker.RAF;
     Ticker.on("tick", this.Update);
+    window.game = this
     this.Main();
   }
 
