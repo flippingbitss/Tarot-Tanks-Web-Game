@@ -2,7 +2,7 @@ import { Container, Text } from 'createjs-module'
 import { EventEmitter } from "events";
 import { WIDTH, HEIGHT } from "../../constants";
 
-export class Scene extends Container{
+class Scene extends Container{
   
   constructor() {
       super();
@@ -22,6 +22,7 @@ export class Scene extends Container{
   }
   
   /**
+   * 
    * @param {string|symbol} event 
    * @param {any} callback 
    * @memberof Scene
@@ -39,3 +40,7 @@ export class Scene extends Container{
     this.eventEmitter.removeListener(event, listener);
   }
 }
+
+
+export * from './menu_scene'
+export * from './play_scene'

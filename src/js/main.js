@@ -1,43 +1,49 @@
-import { Stage, LoadQueue, Sound, Text, Ticker } from "createjs-module";
-import { SCENES, MANIFEST, WIDTH, HEIGHT } from "./constants";
+import { Stage, Sound, Text, Ticker, Bitmap } from "createjs-module";
 
-import backButton from "../assets/images/backButton.png";
-import {MenuScene} from './modules/scene/menu_scene'
+import { SCENES, WIDTH, HEIGHT } from "./constants";
 
-export const StartGame = () => {
-  console.log("Started New Game ");
-  window.addEventListener("load", e => {
-    let game = new Game();
-  });
-};
+import { Keyboard } from "./modules/input";
+import { PlayScene } from "./modules/scene";
+import { Button } from "./modules/common/button";
+
+import assetManager from "./asset_store";
 
 class Game {
-  constructor(args) {
+  Play() {
+    console.log("Started New Game ");
+
     this.canvas = document.getElementById("canvas");
     this.stage = new Stage(this.canvas);
-    this.assetManager = new LoadQueue();
-    this.Init();
+    this.input = new Keyboard();
+    this.input.listenTo(window);
+    assetManager.on("complete", e => {
+      console.info("ASSET LOADING FINISHED");
+      this.Init();
+    });
   }
 
   Init() {
-    this.Start();
-  }
-
-  Start() {
     this.stage.enableMouseOver(20);
     Ticker.framerate = 60;
+    Ticker.timingMode = Ticker.RAF;
     Ticker.on("tick", this.Update);
     this.Main();
   }
 
   Update() {
+    this.scene.Update();
     this.stage.update();
   }
 
   Main() {
-    let scene = new MenuScene();
-    
-
-    this.stage.addChild(scene);
+    this.scene = new PlayScene();
+    // this.scene.regX = WIDTH / 2;
+    // this.scene.regY = HEIGHT / 2;
+    // this.scene.x = WIDTH/2;
+    // this.scene.y = HEIGHT/2;
+    // this.scene.rotation = 180;
+    this.stage.addChild(this.scene);
   }
 }
+
+export default new Game();

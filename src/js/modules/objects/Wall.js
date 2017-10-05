@@ -1,9 +1,7 @@
 import { Bitmap } from "createjs-module";
 
-export class Button extends Bitmap {
+export class Wall extends Bitmap {
   /**
-     * Creates an instance of Button.
-     *
      * @param {any} image
      * @param {number} x
      * @param {number} y
@@ -21,16 +19,10 @@ export class Button extends Bitmap {
     this.x = x;
     this.y = y;
 
-    // event listeners
-    this.on("mouseover", this._mouseOver);
-    this.on("mouseout", this._mouseOut);
   }
 
-  _mouseOver(event) {
-    this.alpha = 0.7; // change opacity to 70%
-  }
 
-  _mouseOut(event) {
-    this.alpha = 1.0; // change the opacity to 100%
-  }
+  
+
+
 }

@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /* This is how you use the environments variables passed by the webpack.DefinePlugin */
 
-import { StartGame } from './js/main';
+import game from './js/main';
 
 /**
  * The linter can be disabled via LINTER=false env var - show a message in console to inform if it's on or off
@@ -33,8 +33,4 @@ if (process.env.DEVTOOLS && process.env.NODE_ENV !== 'production') {
 
 /** This is where the "real code" start */
 
-const main = () => {
-  StartGame();
-};
-
-main();
+game.Play();

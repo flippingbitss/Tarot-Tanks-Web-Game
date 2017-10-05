@@ -8,6 +8,7 @@ log.level = 'silly';
 const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const myLocalIp = require('my-local-ip');
 const common = require('./common');
 const plugins = [];
@@ -61,6 +62,9 @@ if(!FAIL_ON_ERROR) {
 }
 
 
+plugins.push(new CopyWebpackPlugin([
+  { from: '/assets', to: '/assets' },
+]))
 plugins.push(new HtmlWebpackPlugin({
   title: 'Tarot Tanks',
   template: 'src/index.ejs', // Load a custom template
@@ -154,7 +158,7 @@ const config = {
   },
   output: {
     publicPath: "",
-    filename: `[name]${hash}.js`,
+    filename: `[name].js`,
     chunkFilename: `[id]${hash}.chunk.js`,
     path: path.join(__dirname, BUILD_DIR, DIST_DIR  )
   },
