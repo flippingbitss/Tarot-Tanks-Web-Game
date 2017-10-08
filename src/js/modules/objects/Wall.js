@@ -18,11 +18,5 @@ export class Wall extends Bitmap {
 
     this.x = x;
     this.y = y;
-
   }
-
-
-  
-
-
 }
