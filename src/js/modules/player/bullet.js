@@ -1,6 +1,6 @@
 import { Bitmap, Ticker, EventDispatcher, Event, Shape } from "createjs-module";
 import { Vector2 } from "../../utils";
-import { DIR, WIDTH, HEIGHT } from "../../constants";
+import { DIR, FULL_WIDTH, FULL_HEIGHT } from "../../constants";
 import game from "../../main";
 
 export class Bullet extends Shape {
@@ -50,7 +50,7 @@ export class Bullet extends Shape {
   }
 
   inBounds() {
-    return this.x >= 0 && this.x < WIDTH && this.y >= 0 && this.y < HEIGHT;
+    return this.x >= 0 && this.x < FULL_WIDTH && this.y >= 0 && this.y < FULL_HEIGHT;
   }
 
   isColliding() {
@@ -58,14 +58,26 @@ export class Bullet extends Shape {
     // game.scene.walls;
     // console.log(this.stage.mouseX)
     for (let wall of walls) {
-      let localPos = wall.globalToLocal(this.x,this.y)
-     // let wallLocal = this.stage.globalToLocal(wall.x,wall.y)
+      let localPos = wall.globalToLocal(this.x, this.y);
+      // let wallLocal = this.stage.globalToLocal(wall.x,wall.y)
       // console.log(localPos.x,localPos.y, "   ", this.x, this.y)
       // console.log(wallLocal.x, wallLocal.y, "   ", wall.x, wall.y)
-      if (wall.hitTest(localPos.x, localPos.y)) {
+      let wallWidth = wall.getBounds().width;
+      let wallHeight = wall.getBounds().height;
+      if (
+        this.x >= wall.x &&
+        this.x <= wall.x + wallWidth &&
+        this.y >= wall.y &&
+        this.y <= wall.y + wallHeight
+      ) {
         console.log("hit with wall");
         return true;
       }
+
+      // if (wall.hitTest(localPos.x, localPos.y)) {
+      //   console.log("hit with wall");
+      //   return true;
+      // }
     }
     return false;
   }

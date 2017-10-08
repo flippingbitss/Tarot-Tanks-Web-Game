@@ -1,5 +1,8 @@
-export const WIDTH = 1280;
+export const WIDTH = 1260;
 export const HEIGHT = 720;
+
+export const FULL_WIDTH = WIDTH * 2;
+export const FULL_HEIGHT = HEIGHT * 2;
 
 export const MANIFEST = [
   { id: "backButton", src: "/assets/images/backButton.png" },
@@ -9,6 +12,7 @@ export const MANIFEST = [
   { id: "ground", src: "/assets/images/ground2.jpg" },
   { id: "cloud", src: "/assets/images/cloud.png" },
   { id: "brickWall", src: "/assets/images/brick_wall.jpg" },
+  { id: "tileSet", src: "/assets/images/sample_tiles.png" },
   { id: "bullet", src: "/assets/images/bullet.png" },
   { id: "ocean", src: "/assets/images/ocean.gif" }
 ];

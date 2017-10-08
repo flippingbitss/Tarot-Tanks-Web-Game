@@ -1,6 +1,6 @@
 import { Stage, Sound, Text, Ticker, Bitmap } from "createjs-module";
 
-import { SCENES, WIDTH, HEIGHT } from "./constants";
+import { SCENES, WIDTH, HEIGHT, FULL_HEIGHT,FULL_WIDTH } from "./constants";
 
 import { Keyboard } from "./modules/input";
 import { PlayScene } from "./modules/scene";
@@ -27,17 +27,17 @@ class Game {
     Ticker.framerate = 60;
     Ticker.timingMode = Ticker.RAF;
     Ticker.on("tick", this.Update);
-    window.game = this
+    window.game = this;
     this.Main();
   }
 
   Update() {
     this.scene.Update();
-    this.stage.update();
   }
 
   Main() {
     this.scene = new PlayScene();
+    this.stage.setBounds(0, 0, FULL_WIDTH, FULL_HEIGHT);
     // this.scene.regX = WIDTH / 2;
     // this.scene.regY = HEIGHT / 2;
     // this.scene.x = WIDTH/2;

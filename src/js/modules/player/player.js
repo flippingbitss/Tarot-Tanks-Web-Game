@@ -1,6 +1,6 @@
 import { Bitmap, Ticker, Tween, Event } from "createjs-module";
 import { Keyboard } from "../input";
-import { DIR, KEYS } from "../../constants";
+import { DIR, KEYS, HEIGHT, WIDTH, FULL_HEIGHT, FULL_WIDTH } from "../../constants";
 import { Vector2 } from "../../utils";
 import { Bullet } from "./bullet";
 import assetManager from "../../asset_store";
@@ -39,7 +39,18 @@ export class Player extends Bitmap {
   Update() {
     let [up, right, down, left] = this.movement;
     if (!this.movement.every(e => !e)) {
-      this.pos = this.pos.add(this.forward.scale(this.speed));
+      let pos = this.pos.add(this.forward.scale(this.speed));
+
+      pos.x = Math.max(
+        this.getBounds().width / 2,
+        Math.min(pos.x, FULL_WIDTH - this.getBounds().width / 2)
+      );
+      pos.y = Math.max(
+        this.getBounds().height / 2,
+        Math.min(pos.y, FULL_HEIGHT - this.getBounds().height / 2)
+      );
+
+      if (!this.isOverlapping(pos)) this.pos = pos;
     }
 
     for (let bullet of this.bullets) {
@@ -47,6 +58,26 @@ export class Player extends Bitmap {
     }
 
     this.stage.update();
+  }
+
+  isOverlapping(pos) {
+    for (let wall of game.scene.walls) {
+      let wallWidth = wall.getBounds().width;
+      let wallHeight = wall.getBounds().height;
+
+      let myWidth = this.getBounds().width;
+      let myHeight = this.getBounds().height;
+
+      if (
+        ((pos.x + myWidth / 2 >= wall.x && pos.x + myWidth / 2 <= wall.x + wallWidth) ||
+          (pos.x - myWidth / 2 >= wall.x && pos.x - myWidth / 2 <= wall.x + wallWidth)) &&
+        ((pos.y + myHeight / 2 >= wall.y && pos.y + myHeight / 2 <= wall.y + wallHeight) ||
+          (pos.y - myHeight / 2 >= wall.y && pos.y - myHeight / 2 <= wall.y + wallHeight))
+      ) {
+        return true;
+      }
+    }
+    return false;
   }
 
   isKeyDown() {
@@ -61,7 +92,6 @@ export class Player extends Bitmap {
       this.movement[dir] = false;
     }
 
-    // this.forward = forward;
     this.rotation = 360 - this.forward.atan2(Vector2.Down) * 180 / Math.PI;
   }
 

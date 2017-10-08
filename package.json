@@ -27,10 +27,10 @@
   "author": "Manpreet Matharu",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/matharumanpreet00/Tarot-Tanks-Web-Game.git"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/matharumanpreet00/Tarot-Tanks-Web-Game/issues"
   },
   "license": "MIT",
   "devDependencies": {
