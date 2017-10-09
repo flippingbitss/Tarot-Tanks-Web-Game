@@ -168,6 +168,7 @@ const config = {
   devServer: {
     hot: true,
     host: LOCALHOST ? '0.0.0.0' : myLocalIp(),
+    disableHostCheck: true,
     port: PORT
   },
   module: {
