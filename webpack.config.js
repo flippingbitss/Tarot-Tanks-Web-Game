@@ -167,7 +167,7 @@ const config = {
   devtool: OPTIMIZE ? false : 'sourcemap',
   devServer: {
     hot: true,
-    host: LOCALHOST ? 'localhost' : myLocalIp(),
+    host: LOCALHOST ? '0.0.0.0' : myLocalIp(),
     port: PORT
   },
   module: {
