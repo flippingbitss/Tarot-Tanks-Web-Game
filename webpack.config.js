@@ -19,7 +19,7 @@ const BANNER_HTML = common.getBannerHtml();
 const root = __dirname;
 
 const MODE_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') > -1 ? true : false;
-
+const PORT = process.env.PORT || 8080
 log.info('webpack', 'Launched in ' + (MODE_DEV_SERVER ? 'dev-server' : 'build') + ' mode');
 
 /** environment setup */
@@ -110,10 +110,10 @@ if (NODE_ENV !== 'production') {
 if (MODE_DEV_SERVER) {
   // webpack-dev-server mode
   if(LOCALHOST) {
-    log.info('webpack', 'Check http://localhost:8080');
+    log.info('webpack', 'Check http://localhost:'+PORT);
   }
   else {
-    log.info('webpack', 'Check http://' + myLocalIp() + ':8080');
+    log.info('webpack', 'Check http://' + myLocalIp() + ':' + PORT);
   }
 }
 else {
