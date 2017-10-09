@@ -13,8 +13,7 @@
     "serve-dist": "./node_modules/.bin/serve build/dist",
     "build": "npm run clean-dist && npm run webpack-build",
     "build-prod": "npm run clean-dist && NODE_ENV=production npm run webpack-build-prod",
-    "build-prod-all":
-      "DEVTOOLS=false npm run build-prod && NODE_ENV=production OPTIMIZE=false DEVTOOLS=true DIST_DIR=dist/devtools npm run webpack-build",
+    "build-prod-all": "DEVTOOLS=false npm run build-prod && NODE_ENV=production OPTIMIZE=false DEVTOOLS=true DIST_DIR=dist/devtools npm run webpack-build",
     "postbuild-prod-all": "npm run generate-dist-readme",
     "webpack": "./node_modules/.bin/webpack-dev-server --progress --colors --hot --inline",
     "webpack-build": "./node_modules/.bin/webpack --progress",
@@ -22,8 +21,16 @@
     "generate-dist-readme": "node bin/generate-dist-readme.js",
     "contributing-test": "./contributing/bin/contributing-test.sh"
   },
-  "pre-commit": ["test"],
-  "keywords": ["Webpack", "Babel", "ES6", "Sass", "Eslint"],
+  "pre-commit": [
+    "test"
+  ],
+  "keywords": [
+    "Webpack",
+    "Babel",
+    "ES6",
+    "Sass",
+    "Eslint"
+  ],
   "author": "Manpreet Matharu",
   "repository": {
     "type": "git",
@@ -73,7 +80,7 @@
     "npmlog": "^2.0.2"
   },
   "engines": {
-    "npm": "^5.3.0",
+    "npm": "^5.4.0",
     "node": "^8.5.0"
   }
 }
