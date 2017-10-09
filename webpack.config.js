@@ -20,6 +20,8 @@ const root = __dirname;
 
 const MODE_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') > -1 ? true : false;
 const PORT = process.env.PORT || 8080
+const HEROKU = process.env.HEROKU;
+
 log.info("PORT "+ PORT)
 log.info('webpack', 'Launched in ' + (MODE_DEV_SERVER ? 'dev-server' : 'build') + ' mode');
 
@@ -64,7 +66,7 @@ if(!FAIL_ON_ERROR) {
 
 
 plugins.push(new CopyWebpackPlugin([
-  { from: '/app/assets', to: '/assets' },
+  { from: HEROKU ? '/app/assets' : '/assets' , to: '/assets' },
 ]))
 plugins.push(new HtmlWebpackPlugin({
   title: 'Tarot Tanks',
@@ -168,7 +170,7 @@ const config = {
   devServer: {
     hot: true,
     host: LOCALHOST ? '0.0.0.0' : myLocalIp(),
-    disableHostCheck: true,
+    disableHostCheck: HEROKU ? true : false,
     port: PORT
   },
   module: {
