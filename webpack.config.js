@@ -20,6 +20,7 @@ const root = __dirname;
 
 const MODE_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') > -1 ? true : false;
 const PORT = process.env.PORT || 8080
+log.info("PORT "+ PORT)
 log.info('webpack', 'Launched in ' + (MODE_DEV_SERVER ? 'dev-server' : 'build') + ' mode');
 
 /** environment setup */
@@ -166,7 +167,8 @@ const config = {
   devtool: OPTIMIZE ? false : 'sourcemap',
   devServer: {
     hot: true,
-    host: LOCALHOST ? 'localhost' : myLocalIp()
+    host: LOCALHOST ? 'localhost' : myLocalIp(),
+    port: PORT
   },
   module: {
     rules: [
