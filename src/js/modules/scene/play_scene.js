@@ -3,7 +3,6 @@ import { Button } from "../common/button";
 import { WIDTH, HEIGHT, FULL_HEIGHT, FULL_WIDTH, TILE_SIZE } from "../../constants";
 import { Player } from "../player/player";
 import { Enemy } from "../enemy/enemy";
-import { Wall } from "../objects/wall";
 import TileMap from "../map/tile_map";
 import Camera from "../map/camera";
 import assetManager from "../../asset_store";
@@ -48,16 +47,11 @@ export class PlayScene extends Stage {
       }
     }
 
-    let wall1 = new Wall(assetManager.getResult("brickWall"), TILE_SIZE * 8, TILE_SIZE * 4, false);
-    let wall2 = new Wall(assetManager.getResult("brickWall"), TILE_SIZE * 4, TILE_SIZE * 2, false);
-    this.walls.push(wall1, wall2);
-
     const half = TILE_SIZE / 2;
     this.player = new Player(4 * TILE_SIZE - half, 6 * TILE_SIZE - half, 5, this);
     this.enemy = new Enemy(8 * TILE_SIZE + half, 3 * TILE_SIZE +half, 1, this);
     this.stage.snapToPixel = true;
 
-    this.addChild(...this.walls);
     this.addChild(this.enemy);
     this.addChild(this.player);
   }
