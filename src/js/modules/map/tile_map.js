@@ -1,9 +1,10 @@
 import { Sprite, SpriteSheet } from "createjs-module";
 import asset_store from "../../asset_store";
+import { TILE_SIZE } from "../../constants";
 
 export default class TileMap {
   constructor() {
-    this.tileSize = 120;
+    this.tileSize = TILE_SIZE;
     this.rows = 12;
     this.cols = 21;
 
@@ -18,7 +19,7 @@ export default class TileMap {
         spacing: 0,
         margin: 0
       }
-    }); 
+    });
 
     console.log(this.tileSet.getNumFrames());
     // prettier-ignore
@@ -26,19 +27,51 @@ export default class TileMap {
             4, 3, 3, 3,  3, 3, 3, 3,  3, 3, 3, 3,  3, 3, 3, 3,  3, 3, 3, 3, 4,
             4, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 4,
             4, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 4,
-            4, 0, 0, 5,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 5, 0, 4,
             4, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 4,
             4, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 4,
             4, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 4,
             4, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 4,
             4, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 4,
             4, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 4,
-            4, 4, 4, 0,  5, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4, 4,
+            4, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0, 4,
+            4, 4, 4, 0,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4,  4, 4, 4, 4, 4,
             4, 4, 4, 0,  0, 3, 3, 3,  3, 3, 3, 3,  3, 3, 3, 3,  3, 3, 3, 3, 3
         ];
   }
 
-  getTile(row, col) {
+  getTileType(row, col) {
     return this.grid[row * this.cols + col];
+  }
+
+  getRow(y) {
+    return Math.floor(y / this.tileSize);
+  }
+
+  getCol(x) {
+    return Math.floor(x / this.tileSize);
+  }
+
+  getTileCoord(x, y) {
+    return {
+      row: this.getRow(y),
+      col: this.getCol(x)
+    };
+  }
+
+  getTileCoordAdjusted(x, y) {
+    return {
+      row: y / this.tileSize,
+      col: x / this.tileSize
+    };
+  }
+
+  isSolidTileAtXY(x, y) {
+    const col = this.getCol(x);
+    const row = this.getRow(y);
+
+    // tiles 3 and 5 are solid -- the rest are walkable , return TRUE if any tile is solid
+    let tile = this.getTileType(row, col);
+    let isSolid = tile === 2 || tile === 4;
+    return isSolid;
   }
 }

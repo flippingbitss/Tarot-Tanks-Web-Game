@@ -28,6 +28,14 @@ export class Vector2 {
     return new Vector2(1, 0);
   }
 
+  static get Zero() {
+    return new Vector2(0, 0);
+  }
+
+  static get One() {
+    return new Vector2(1, 1);
+  }
+
   /** 
    * @param {Vector2} vec 
    * @returns {Vector2}
@@ -53,15 +61,6 @@ export class Vector2 {
    */
   scale(number) {
     return new Vector2(this.x * number, this.y * number);
-  }
-
-  /** 
-   * @param {Vector2} vec 
-   * @returns {Vector2}
-   * @memberof Vector2
-   */
-  divide(vec) {
-    return new Vector2(this.x / vec.x, this.y / vec.y);
   }
 
   /**
@@ -103,7 +102,9 @@ export class Vector2 {
    * @memberof Vector2
    */
   get normalized() {
-    return this.divide(this.magnitude);
+    let mag = this.magnitude;
+    if (mag != 0) return this.scale(1 / mag);
+    return Vector2.Zero;
   }
 
   /**

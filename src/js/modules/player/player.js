@@ -7,9 +7,8 @@ import assetManager from "../../asset_store";
 import game from "../../main";
 
 export class Player extends Bitmap {
-  constructor(x, y, speed = 5) {
+  constructor(x, y, speed = 5, scene) {
     super(assetManager.getResult("player"));
-
     this.regX = this.getBounds().width * 0.5;
     this.regY = this.getBounds().height * 0.5;
 
@@ -23,6 +22,8 @@ export class Player extends Bitmap {
     this.rotation = this.forward.angle(Vector2.Down);
     this.bullets = [];
     window.vec = Vector2;
+
+    this.scene = scene;
     this.Main();
   }
 
@@ -50,7 +51,8 @@ export class Player extends Bitmap {
         Math.min(pos.y, FULL_HEIGHT - this.getBounds().height / 2)
       );
 
-      if (!this.isOverlapping(pos)) this.pos = pos;
+      if (!this.isColliding(pos)) 
+          this.pos = pos;
     }
 
     for (let bullet of this.bullets) {
@@ -60,13 +62,38 @@ export class Player extends Bitmap {
     this.stage.update();
   }
 
+  isColliding(pos) {
+    const { x, y } = pos;
+
+    let map = this.scene.tileMap;
+    let skinWidth = 20;
+    let myWidth = this.getBounds().width - skinWidth;
+    let myHeight = this.getBounds().height - skinWidth;
+
+    let left = x - myWidth / 2;
+    let right = x + myWidth / 2;
+    let top = y - myHeight / 2;
+    let bottom = y + myHeight / 2;
+
+    let isColliding = 
+     (
+      map.isSolidTileAtXY(left, top) ||
+      map.isSolidTileAtXY(right, top) ||
+      map.isSolidTileAtXY(right, bottom) ||
+      map.isSolidTileAtXY(left, bottom)
+    );
+
+
+    if(isColliding)
+      console.log('colliding');
+
+    return isColliding;
+  }
+
   isOverlapping(pos) {
     for (let wall of game.scene.walls) {
       let wallWidth = wall.getBounds().width;
       let wallHeight = wall.getBounds().height;
-
-      let myWidth = this.getBounds().width;
-      let myHeight = this.getBounds().height;
 
       if (
         ((pos.x + myWidth / 2 >= wall.x && pos.x + myWidth / 2 <= wall.x + wallWidth) ||
@@ -116,6 +143,9 @@ export class Player extends Bitmap {
   }
 
   Main() {
+    // console.log("main of player ", this.scene);
+
+
     game.input.addMapping(37, e => this.Move(e, DIR.LEFT, Vector2.Left), false);
     game.input.addMapping(38, e => this.Move(e, DIR.UP, Vector2.Down), false);
     game.input.addMapping(39, e => this.Move(e, DIR.RIGHT, Vector2.Right), false);
