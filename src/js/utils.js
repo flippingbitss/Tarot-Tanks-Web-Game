@@ -136,3 +136,26 @@ export class Vector2 {
     return Math.acos(this.dot(vec) / (this.magnitude * vec.magnitude));
   }
 }
+
+/**
+ * @export
+ * @author Manpreet Singh Matharu
+ * @description some utility functions
+ * @class Util
+ */
+export class Util {
+  /**
+   * @param {Number} value 
+   * @param {Number} min 
+   * @param {Number} max 
+   * @returns {Number}
+   * @memberof Util
+   */
+  static clamp(value, min, max) {
+    return Math.max(min, Math.min(value, max));
+  }
+
+
+
+
+}

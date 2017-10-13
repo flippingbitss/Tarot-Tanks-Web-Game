@@ -58,12 +58,20 @@ export default class TileMap {
     };
   }
 
-  getTileCoordAdjusted(x, y) {
+  getTileCoordExact(x, y) {
     return {
       row: y / this.tileSize,
       col: x / this.tileSize
     };
   }
+
+  getTileCoordRound(x, y) {
+    return {
+      row: Math.round(y / this.tileSize),
+      col: Math.round(x / this.tileSize)
+    };
+  }
+
 
   isSolidTileAtXY(x, y) {
     const col = this.getCol(x);

@@ -3,8 +3,8 @@ import { Stage, Sound, Text, Ticker, Bitmap } from "createjs-module";
 import { SCENES, WIDTH, HEIGHT, FULL_HEIGHT,FULL_WIDTH } from "./constants";
 
 import { Keyboard } from "./modules/input";
-import { PlayScene } from "./modules/scene";
-import { Button } from "./modules/common/button";
+import { PlayScene, MenuScene } from "./modules/scene";
+import { Button } from "./modules/common";
 
 import assetManager from "./asset_store";
 
@@ -31,12 +31,13 @@ class Game {
     this.Main();
   }
 
-  Update() {
-    this.scene.Update();
+  Update(e) {
+    this.scene.Update(e);
   }
 
   Main() {
     this.scene = new PlayScene();
+    // this.scene = new MenuScene();
     this.stage.setBounds(0, 0, FULL_WIDTH, FULL_HEIGHT);
     // this.scene.regX = WIDTH / 2;
     // this.scene.regY = HEIGHT / 2;

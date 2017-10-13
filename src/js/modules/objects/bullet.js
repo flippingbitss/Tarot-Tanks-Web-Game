@@ -28,7 +28,7 @@ export class Bullet extends Shape {
     this.pos = this._position;
     this.forward = dir;
     this.speed = 10;
-    
+
     this.isAlive = true;
     // Ticker.on("tick", this.Update);
   }
@@ -92,11 +92,9 @@ export class Bullet extends Shape {
   }
   */
 
-  Update() {
+  Move() {
     let newPos = this.forward.scale(this.speed);
-
     this.pos = this.pos.add(newPos);
-
     if (!this.inBounds() || this.isColliding(this.pos)) {
       if (this.isAlive) {
         console.log("kill bullet");
@@ -104,5 +102,9 @@ export class Bullet extends Shape {
         this.dispatchEvent("destroy");
       }
     }
+  }
+
+  Update() {
+    this.Move();
   }
 }

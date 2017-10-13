@@ -38,3 +38,5 @@ export const KEYS = Object.freeze({
   LEFT_ARROW: 37,
   RIGHT_ARROW: 39
 });
+
+export const FONT_FAMILY = "Press Start 2P";
