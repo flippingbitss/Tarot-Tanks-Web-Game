@@ -43,7 +43,7 @@ export class Enemy extends GameObject {
   }
 
   Update(tick) {
-    if (this.isObjectInRange(this.scene.player, 500)) {
+    if (this.isObjectInRange(this.scene.player, 200)) {
       // this._continueShoot();
       this.doAtInterval(this.shoot, tick, 2000);
 
@@ -71,7 +71,7 @@ export class Enemy extends GameObject {
 
   setupWaypoints() {
     this.currentWaypoint = 0;
-    this.waypoints = [[3, 4], [6, 4], [6, 7], [3, 7]];
+    this.waypoints = [[6, 5], [15, 5]];
   }
 
   /**

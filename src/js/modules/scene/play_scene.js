@@ -11,6 +11,11 @@ export class PlayScene extends Stage {
     super(args);
     this.walls = [];
     this.tileMap = new TileMap();
+
+    this.enemies = [];
+
+    this.stage.scaleX = 0.5;
+    this.stage.scaleY = 0.5;
     this.Main();
   }
 
@@ -50,10 +55,10 @@ export class PlayScene extends Stage {
     this.player = new Player(4 * TILE_SIZE - half, 6 * TILE_SIZE - half, 8, this);
     // this.player = new Player(6 * TILE_SIZE - half, 8 * TILE_SIZE - half, 5, this);
 
-    this.enemy = new Enemy(8 * TILE_SIZE + half, 3 * TILE_SIZE + half, 5, this);
+    this.enemies.push(new Enemy(8 * TILE_SIZE + half, 3 * TILE_SIZE + half, 5, this));
     this.stage.snapToPixel = true;
 
-    this.addChild(this.enemy);
+    this.addChild(...this.enemies)
     this.addChild(this.player);
   }
 
@@ -70,18 +75,20 @@ export class PlayScene extends Stage {
   }
 
   Update(e) {
-    for (let i = 0; i < this.ground.numChildren; i++) {
-      let element = this.ground.getChildAt(i);
-      element.visible = this.inViewport(element.x, element.y);
-    }
+    // for (let i = 0; i < this.ground.numChildren; i++) {
+    //   let element = this.ground.getChildAt(i);
+    //   element.visible = this.inViewport(element.x, element.y);
+    // }
 
     this.player.Update(e);
-    this.enemy.Update(e);
+    for (let enemy of this.enemies) enemy.Update(e);
 
     this.camera.moveTo(this.player.pos.x - WIDTH / 2, this.player.pos.y - HEIGHT / 2);
 
-    this.stage.x = -this.camera.x;
-    this.stage.y = -this.camera.y;
+    // this.stage.x = -this.camera.x;
+    // this.stage.y = -this.camera.y;
+
+
 
     this.stage.update();
   }

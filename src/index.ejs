@@ -6,7 +6,6 @@
   <title><%= htmlWebpackPlugin.options.title %></title>
   <link rel="shortcut icon" href="assets/images/island.png" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
   <% if (!htmlWebpackPlugin.options.MODE_DEV_SERVER) { %><link href="<%= webpack.assetsByChunkName['main'][1] %>" rel="stylesheet"><% } %>
 </head>
 <body class="content-body">
