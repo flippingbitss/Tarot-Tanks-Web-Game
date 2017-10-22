@@ -36,6 +36,17 @@ export class Vector2 {
     return new Vector2(1, 1);
   }
 
+  /**
+   * @static
+   * @param {Vector2} v1 
+   * @param {Vector2} v2 
+   * @returns {Number} distance
+   * @memberof Vector2
+   */
+  static dist(v1,v2){
+    return v1.subtract(v2).magnitude
+  }
+
   /** 
    * @param {Vector2} vec 
    * @returns {Vector2}
@@ -155,7 +166,18 @@ export class Util {
     return Math.max(min, Math.min(value, max));
   }
 
-
-
-
+  /**
+   * @param {Number} value 
+   * @param {Number} start
+   * @param {Number} end
+   * @param {Number} resultStart
+   * @param {Number} resultEnd
+   * @param {Boolean} clampBounds=false
+   * @returns {Number}
+   * @memberof Util
+   */
+  static map(value, start, end, resultStart, resultEnd, clampBounds = false) {
+    if (clampBounds) value = this.clamp(value, start, end);
+    return (value - start) / (end - start) * (resultEnd - resultStart) + resultStart;
+  }
 }

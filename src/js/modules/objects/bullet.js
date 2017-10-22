@@ -1,6 +1,6 @@
 import { Bitmap, Ticker, Shape } from "createjs-module";
 import { Vector2 } from "../../utils";
-import { DIR, FULL_WIDTH, FULL_HEIGHT } from "../../constants";
+import { DIR, FULL_WIDTH, FULL_HEIGHT, TAGS } from "../../constants";
 import game from "../../main";
 
 export class Bullet extends Shape {
@@ -13,7 +13,7 @@ export class Bullet extends Shape {
      * @param {boolean} isCentered
      */
 
-  constructor(image, x, y, isCentered, dir, index = 0) {
+  constructor(image, x, y, isCentered, dir, owner = TAGS.ENEMY) {
     super();
 
     this.graphics.beginFill("red").drawCircle(this.x, this.y, 6);
@@ -23,12 +23,13 @@ export class Bullet extends Shape {
     //   this.regX = bounds.width * 0.5;
     //   this.regY = bounds.height * 0.5;
     // }
-    this.index = index;
+    this.owner = owner;
     this._position = new Vector2(x, y);
     this.pos = this._position;
     this.forward = dir;
     this.speed = 10;
 
+    this.hitObj = { value: null };
     this.isAlive = true;
     // Ticker.on("tick", this.Update);
   }
@@ -47,6 +48,10 @@ export class Bullet extends Shape {
     this.on("destroy", callback, null, true, this);
   }
 
+  onCollision(callback) {
+    this.on("collision", callback, null, true, { bullet: this, hitObj: this.hitObj });
+  }
+
   inBounds() {
     return this.x >= 0 && this.x < FULL_WIDTH && this.y >= 0 && this.y < FULL_HEIGHT;
   }
@@ -56,6 +61,27 @@ export class Bullet extends Shape {
     const { x, y } = pos;
     let map = game.scene.tileMap;
     let isColliding = map.isSolidTileAtXY(x, y);
+    let collidables = null;
+
+    this.hitObj.value = null;
+    if (this.owner == TAGS.PLAYER) {
+      collidables = game.scene.enemies;
+    } else if (this.owner == TAGS.ENEMY) {
+      collidables = game.scene.players;
+    }
+
+    if (collidables) {
+      for (let obj of collidables) {
+        let tile = map.getTileCoordRaw(obj.pos.x, obj.pos.y);
+        if (map.isPointInTile(this.x, this.y, tile)) {
+          isColliding = true;
+          this.hitObj.value = obj;
+          this.dispatchEvent("collision");
+          break;
+        }
+      }
+    }
+
     return isColliding;
   }
 

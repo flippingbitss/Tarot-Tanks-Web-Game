@@ -5,12 +5,16 @@ export class Keyboard {
   constructor() {
     this.keyMap = new Map();
     this.keyStates = new Map();
-    this.keyTracks = {}
+    this.keyTracks = {};
   }
 
   addMapping(keyCode, callback, isHandledOnce = true) {
     this.keyMap.set(keyCode, { once: isHandledOnce, callback });
     console.log("mapping added", keyCode);
+  }
+
+  removeMapping(keyCodes) {
+    for (let key of keyCodes) this.keyMap.delete(key);
   }
 
   /**
@@ -19,7 +23,6 @@ export class Keyboard {
      * @param {boolean} isHandledOnce
      * @memberof Keyboard
      */
-
 
   handleEvent(event) {
     const { keyCode } = event;
@@ -33,7 +36,7 @@ export class Keyboard {
     const newKeyState = event.type === "keydown" ? PRESSED : RELEASED;
     const oldKeyState = this.keyStates.get(keyCode);
 
-    const mapping = this.keyMap.get(keyCode)
+    const mapping = this.keyMap.get(keyCode);
     if (oldKeyState == newKeyState) {
       if (mapping.once) return;
     }

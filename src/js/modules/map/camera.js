@@ -9,6 +9,9 @@ export default class Camera {
     this.maxY = map.rows * map.tileSize - height;
 
     this.SPEED = 5;
+
+    this.ZOOM = .5;
+
   }
 
   move(dirx, diry) {

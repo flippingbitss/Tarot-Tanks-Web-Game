@@ -17,6 +17,10 @@ export class GameObject extends Bitmap {
     this.rotation = this.forward.angle(Vector2.Down);
     this.speed = speed;
 
+    this.tileType = 100
+
+    this.health = 10;
+
     this.scene = scene;
   }
 
@@ -76,7 +80,7 @@ export class GameObject extends Bitmap {
   isObjectInRange(obj, range) {
     let objPos = obj.pos;
     let myPos = this.pos;
-    if (objPos.subtract(myPos).magnitude < range) {
+    if (Vector2.dist(myPos,objPos) < range) {
       return true;
     }
   }
@@ -102,7 +106,7 @@ export class GameObject extends Bitmap {
    * @memberof GameObject
    */
   _getCurrentTile() {
-    let { row, col } = this.scene.tileMap.getTileCoordExact(
+    let { row, col } = this.scene.tileMap.getTileCoordRaw(
       this.x - TILE_SIZE / 2,
       this.y - TILE_SIZE / 2
     );
