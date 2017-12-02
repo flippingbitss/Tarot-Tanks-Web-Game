@@ -52,6 +52,7 @@ export class Enemy extends GameObject {
   }
 
   Update(tick) {
+    this.stop();
     let closestPlayer = this.getClosestInRange(this.scene.players, 300);
     if (closestPlayer) {
       // this._continueShoot();

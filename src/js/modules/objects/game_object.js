@@ -43,7 +43,10 @@ export class GameObject extends Sprite {
     pos.x = Util.clamp(pos.x, width / 2, FULL_WIDTH - width / 2);
     pos.y = Util.clamp(pos.y, height / 2, FULL_HEIGHT - height / 2);
 
-    if (!this.isColliding(pos)) this.pos = pos;
+    if (!this.isColliding(pos)){
+      this.pos = pos;
+      if(this.paused) this.play();
+    }
   }
 
   /**

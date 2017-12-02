@@ -13,12 +13,14 @@ export const MANIFEST = [
   { id: "map_spritesheet", src: "/assets/images/map_spritesheet.png" },
   { id: "enemy", src: "/assets/images/enemyred.png" },
 
-  {id: "bullet_hit", src:"./assets/audio/bullet_hit.mp3"},
-  {id: "start_screen", src:"./assets/audio/start_screen.mp3"},
-  {id: "main_1", src:"./assets/audio/main_1.mp3"},
+  { id: "bullet_hit", src: "./assets/audio/bullet_hit.mp3" },
+  { id: "start_screen", src: "./assets/audio/start_screen.mp3" },
+  { id: "main_1", src: "./assets/audio/main_1.mp3" }
   // {id: "thunder", src:"./Assets/audio/thunder.ogg"},
   // {id: "yay", src:"./Assets/audio/yay.ogg"}
 ];
+
+const speed = 0.05;
 
 export const SPRITES_SPEC = {
   images: ["/assets/images/sprite_sheet.png"],
@@ -58,10 +60,10 @@ export const SPRITES_SPEC = {
   ],
 
   animations: {
-    playerGreen: { frames: [0, 1, 2, 3, 4, 5], speed: 0.02 },
-    playerYellow: { frames: [6, 7, 8, 9, 10, 11], speed: 0.02 },
-    playerRed: { frames: [12, 13, 14, 15, 16, 17], speed: 0.02 },
-    enemyRed: { frames: [18, 19, 20], speed: 0.02 },
+    playerGreen: { frames: [0, 1, 2, 3, 4, 5], speed },
+    playerYellow: { frames: [6, 7, 8, 9, 10, 11], speed },
+    playerRed: { frames: [12, 13, 14, 15, 16, 17], speed },
+    enemyRed: { frames: [18, 19, 20], speed },
     bullet: [21]
   }
 
