@@ -14,7 +14,7 @@ import { GameObject, Bullet } from ".";
 
 export class Enemy extends GameObject {
   constructor(animName, x, y, speed, scene, waypoints) {
-    super(animName, x, y, speed, scene);
+    super(animName, x * TILE_SIZE + TILE_SIZE/2, y * TILE_SIZE + TILE_SIZE / 2, speed, scene);
 
     let { width, height } = this.getBounds();
     this.setBounds(x, y, TILE_SIZE, TILE_SIZE);
@@ -130,6 +130,10 @@ export class Enemy extends GameObject {
     this.stage.addChild(bullet);
   }
 
+  onDestroy(callback) {
+    this.on("enemyDead", callback, null, true, this); // forward callback to other listeners
+  }
+
   onBulletCollision(e, data) {
     let { bullet, hitObj: { value: obj } } = data;
 
@@ -140,9 +144,20 @@ export class Enemy extends GameObject {
   }
 
   onBulletDestroy(e, bullet) {
-    // update list of bullets to keep only active bullets
+    // if (bullet.owner != TAGS.ENEMY) {
+    //   const isAtMyPosition = this.scene.tileMap.isPointInTile(
+    //     bullet.pos.x,
+    //     bullet.pos.y,
+    //     this.scene.tileMap.getTileCoordRaw(this.pos.x, this.pos.y)
+    //   );
+
+    //   if (isAtMyPosition) this.takeDamage();
+    // }
+
+    // update list of bullets to keep only active bullets    
     this.bullets = this.bullets.filter(b => b.isAlive);
     this.stage.removeChild(bullet);
+
   }
 
   getClosestInRange(objects, range) {
@@ -171,6 +186,13 @@ export class Enemy extends GameObject {
 
     if (this.forward.magnitude == 0 || (currentPos.x == targetX && currentPos.y == targetY)) {
       this.currentWaypoint = (this.currentWaypoint + 1) % this.waypoints.length;
+    }
+  }
+
+  takeDamage() {
+    this.health = Math.max(0, --this.health);
+    if (this.health <= 0) {
+      this.dispatchEvent("enemyDead");
     }
   }
 }

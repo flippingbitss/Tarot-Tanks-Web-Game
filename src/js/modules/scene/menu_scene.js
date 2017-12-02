@@ -4,6 +4,7 @@ import { WIDTH, HEIGHT, FONT_FAMILY, SCENES, FULL_WIDTH, FULL_HEIGHT } from "../
 import {assetManager} from '../../asset_store';
 import { LabelButton } from "../common/label_button";
 import game from '../../main'
+import { Util } from "../../utils";
 
 export class MenuScene extends Stage {
   constructor(args) {
@@ -68,7 +69,7 @@ export class MenuScene extends Stage {
     this.stage.scaleX = 1;
     this.stage.scaleY = 1;
 
-    this.doAtInterval(this.randomizeTitleColor,tick, 500)
+    Util.doAtInterval(this.randomizeTitleColor,tick, 500)
     
 
 
@@ -77,16 +78,5 @@ export class MenuScene extends Stage {
 
   randomizeTitleColor(){
     this.gameTitle.color = this.colors[Math.floor(Math.random() * this.colors.length)];
-  }
-
-  doAtInterval(callback, tick, rate) {
-    this.time = this.time || tick.time;
-
-    let newTime = tick.time;
-   
-    if (newTime - this.time > rate) {
-      callback();
-      this.time = newTime;
-    }
   }
 }

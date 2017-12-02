@@ -1,7 +1,15 @@
 import { Container, Text, Bitmap, Shape, Stage, Sprite } from "createjs-module";
 import { Util, Vector2 } from "../../utils";
 
-import { WIDTH, HEIGHT, FULL_HEIGHT, FULL_WIDTH, TILE_SIZE, FONT_FAMILY, SCENES } from "../../constants";
+import {
+  WIDTH,
+  HEIGHT,
+  FULL_HEIGHT,
+  FULL_WIDTH,
+  TILE_SIZE,
+  FONT_FAMILY,
+  SCENES
+} from "../../constants";
 import { ProgressBar, Label } from "../common";
 import { Player, Enemy } from "../objects";
 import TileMap from "../map/tile_map";
@@ -17,44 +25,42 @@ export class PlayScene extends Stage {
 
     this.players = [];
     this.enemies = [];
-    
+
     // this.stage.scaleX = 0.5;
     // this.stage.scaleY = 0.5;
     this.Main();
   }
 
   Main() {
-   this.camera = new Camera(this.tileMap, WIDTH, HEIGHT);
-   this.stage.snapToPixel = true;
+    this.camera = new Camera(this.tileMap, WIDTH, HEIGHT);
+    this.stage.snapToPixel = true;
     this.addGround();
-    this.addPlayers();
-    
+    this.addTanks();
+
     this.currentTarotCard = new Label("The Magician", 30, FONT_FAMILY, "red", 1080, 30);
     this.centerMark = new Shape();
 
     // this.HUD.addChild(bar);
-    // this.addChild(this.HUD);    
+    // this.addChild(this.HUD);
     // this.addChild(this.centerMark);
     this.addChild(this.currentTarotCard);
   }
 
-
-  addPlayers(){
-    const half = TILE_SIZE / 2;
-    
+  addTanks() {
     this.players.push(
-      new Player("playerGreen",4 * TILE_SIZE - half, 11 * TILE_SIZE - half, 8, this, 0),
-      new Player("playerYellow",18 * TILE_SIZE - half, 11 * TILE_SIZE - half, 8, this, 1)
+      new Player("playerGreen", 4, 11, 8, this, 0),
+      new Player("playerYellow", 18, 11, 8, this, 1)
     );
 
     this.enemies.push(
-      new Enemy("enemyRed",6 * TILE_SIZE + half, 5 * TILE_SIZE + half, 5, this, [[6, 5], [14, 5]])
+      new Enemy("enemyRed", 6, 5, 5, this, [[6, 5], [14, 5]]),
+      new Enemy("enemyRed", 4, 2, 5, this, [[4, 2], [7, 2]]),
+      new Enemy("enemyRed", 16, 2, 5, this, [[13, 2], [16, 2]])
     );
     // this.HUD = new Container();
 
     this.p1Health = new ProgressBar("P1 Health", 1, 100, 30, false);
     this.p2Health = new ProgressBar("P2 Health", 1, 950, 30, false);
-
 
     this.addChild(...this.enemies);
     this.addChild(...this.players);
@@ -62,12 +68,19 @@ export class PlayScene extends Stage {
     this.addChild(this.p2Health);
 
 
+    let handlePlayerDeath = (e, t) => this.handleTankDeath(e, t, this.players)
+    let handleEnemyDeath = (e, t) => this.handleTankDeath(e, t, this.enemies)
+
     for (let p of this.players) {
-      p.onDestroy(this.handlePlayerDeath);
+      p.onDestroy(handlePlayerDeath);
+    }
+
+    for (let e of this.enemies) {
+      e.onDestroy(handleEnemyDeath);
     }
   }
 
-  addGround(){
+  addGround() {
     this.ground = new Container();
     this.addChild(this.ground);
     for (let i = 0; i < this.tileMap.rows; i++) {
@@ -96,14 +109,12 @@ export class PlayScene extends Stage {
 
     // this.ground.stage.update();
     this.ground.cache(0, 0, FULL_WIDTH, FULL_HEIGHT);
-
   }
 
-  handlePlayerDeath(e, player) {
-    if(this.players.length){
-      this.players.splice(this.players.findIndex(p => p.id == player.id),1);
-      this.removeChild(player);
-      this.removeChild
+  handleTankDeath(e, deadTank, tanks) {
+    if (tanks.length) {
+      tanks.splice(tanks.findIndex(t => t.id == deadTank.id), 1);
+      this.removeChild(deadTank);
     }
   }
 
@@ -150,14 +161,14 @@ export class PlayScene extends Stage {
     // this.bar.scaleX = 0.5;
     // this.bar.scaleY = 0.5;
 
-    this.p1Health.progress = (this.players[0] && this.players[0].health || 0) / 10
-    this.p2Health.progress = (this.players[1] && this.players[1].health || 0)  / 10;
+    this.p1Health.progress = ((this.players[0] && this.players[0].health) || 0) / 10;
+    this.p2Health.progress = ((this.players[1] && this.players[1].health) || 0) / 10;
 
     this.p1Health.Update();
     this.p2Health.Update();
 
-    if(!this.players.length)
-        game.setScene(SCENES.END);
+    if (!this.players.length) game.setScene(SCENES.END);
+    if (!this.enemies.length) game.setScene(SCENES.WON);
 
     this.stage.scaleX = this.camera.ZOOM;
     this.stage.scaleY = this.camera.ZOOM;

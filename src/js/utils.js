@@ -180,4 +180,16 @@ export class Util {
     if (clampBounds) value = this.clamp(value, start, end);
     return (value - start) / (end - start) * (resultEnd - resultStart) + resultStart;
   }
+
+  static doAtInterval(callback, tick, rate) {
+    this.time = this.time || tick.time;
+
+    let newTime = tick.time;
+   
+    if (newTime - this.time > rate) {
+      callback();
+      this.time = newTime;
+    }
+  }
+
 }

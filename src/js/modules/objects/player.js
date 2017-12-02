@@ -1,13 +1,13 @@
 import { Bitmap, Ticker, Tween, Event } from "createjs-module";
 import { Keyboard } from "../input";
-import { DIR, KEYS, HEIGHT, WIDTH, FULL_HEIGHT, FULL_WIDTH, TAGS } from "../../constants";
+import { DIR, KEYS, HEIGHT, WIDTH, FULL_HEIGHT, FULL_WIDTH, TAGS, TILE_SIZE } from "../../constants";
 import { Vector2, Util } from "../../utils";
 import { GameObject, Bullet } from ".";
 import game from "../../main";
 
 export class Player extends GameObject {
   constructor(animName, x, y, speed = 5, scene, playerNum) {
-    super(animName, x, y, speed, scene);
+    super(animName, x * TILE_SIZE - TILE_SIZE/2, y * TILE_SIZE - TILE_SIZE / 2, speed, scene);
 
     this.movement = [false, false, false, false];
     this.bullets = [];
@@ -55,7 +55,18 @@ export class Player extends GameObject {
 
     this.stage.addChild(bullet);
     bullet.onDestroyed(this.handleBulletDestruction);
+    bullet.onCollision(this.onBulletCollision);
     this.bullets.push(bullet);
+  }
+
+
+  onBulletCollision(e, data) {
+    let { bullet, hitObj: { value: obj } } = data;
+
+    console.log("hitobj", obj);
+    if (obj && obj.tag == TAGS.ENEMY) {
+      obj.takeDamage();
+    }
   }
 
   /**
@@ -64,15 +75,15 @@ export class Player extends GameObject {
    * @memberof Player
    */
   handleBulletDestruction(e, bullet) {
-    if (bullet.owner != TAGS.PLAYER) {
-      const isAtMyPosition = this.scene.tileMap.isPointInTile(
-        bullet.pos.x,
-        bullet.pos.y,
-        this.scene.tileMap.getTileCoordRaw(this.pos.x, this.pos.y)
-      );
+    // if (bullet.owner != TAGS.PLAYER) {
+    //   const isAtMyPosition = this.scene.tileMap.isPointInTile(
+    //     bullet.pos.x,
+    //     bullet.pos.y,
+    //     this.scene.tileMap.getTileCoordRaw(this.pos.x, this.pos.y)
+    //   );
 
-      if (isAtMyPosition) this.takeDamage();
-    }
+    //   if (isAtMyPosition) this.takeDamage();
+    // }
 
     this.bullets = this.bullets.filter(b => b.isAlive);
     this.stage.removeChild(bullet);
