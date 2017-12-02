@@ -1,7 +1,9 @@
-import { Stage, Text } from "createjs-module";
+import { Stage, Text, Shape, Rectangle, Bitmap, Ticker } from "createjs-module";
 import { Button, Label } from "../common";
-import { WIDTH, HEIGHT, FONT_FAMILY } from "../../constants";
-import assetManager from '../../asset_store';
+import { WIDTH, HEIGHT, FONT_FAMILY, SCENES, FULL_WIDTH, FULL_HEIGHT } from "../../constants";
+import {assetManager} from '../../asset_store';
+import { LabelButton } from "../common/label_button";
+import game from '../../main'
 
 export class MenuScene extends Stage {
   constructor(args) {
@@ -10,15 +12,81 @@ export class MenuScene extends Stage {
   }
 
   Main() {
-    let gameTitle = new Label("Tarot Tanks", 50, FONT_FAMILY, "lightgray", WIDTH/2, HEIGHT / 5 ,true);
-    let startButton = new Button(assetManager.getResult("startButton"),WIDTH / 2, HEIGHT / 2, true);
+    this.colors = ["yellow","red","pink","blue","orange","green"]
 
+    this.stage.scaleX = 1;
+    this.stage.scaleY = 1;
+
+    // background
+    let background = new Bitmap(assetManager.getResult("menu_background"))
+    background.scaleX = 0.8;
+    background.scaleY = 0.8;
+    background.alpha = 0.8;
+    background.setBounds(0,0,FULL_WIDTH, FULL_HEIGHT)
+
+
+    // title
+    this.gameTitle = new Label("Tarot Tanks", 50, FONT_FAMILY, this.colors[0], WIDTH/2, HEIGHT / 5 ,true);
+
+    // buttons
+    let startButton = new LabelButton("Start",30, FONT_FAMILY, "yellow", WIDTH / 2, HEIGHT / 2, true);
+    let instructionsButton = new LabelButton("Instructions",30, FONT_FAMILY, "yellow", WIDTH / 2, HEIGHT / 1.6, true);
+    let soundButton = new LabelButton("Sound ON",30, FONT_FAMILY, "yellow", WIDTH / 2, HEIGHT / 1.3, true);
+    
+
+
+    startButton.on("click",e=>{
+      game.setScene(SCENES.PLAY);
+      // TODO implement sound
+    })
+
+     
+    instructionsButton.on("click",e=>{
+      alert("not implemented yet")
+      // TODO implement sound
+    })
+
+   
+    soundButton.on("click",e=>{
+      soundButton.text = soundButton.text == "Sound ON" ? "Sound OFF" : "Sound ON";
+      alert("not implemented yet")
+      // TODO implement sound
+    })
+    
     // this.stage.addChild(startButton);
-    this.addChild(gameTitle);
+    this.addChild(background);
+    this.addChild(this.gameTitle);
     this.addChild(startButton);
+    this.addChild(instructionsButton);
+    this.addChild(soundButton);
+
+
+
   }
 
-  Update() {
+  Update(tick) {
+    this.stage.scaleX = 1;
+    this.stage.scaleY = 1;
+
+    this.doAtInterval(this.randomizeTitleColor,tick, 500)
+    
+
+
     this.stage.update();
+  }
+
+  randomizeTitleColor(){
+    this.gameTitle.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+  }
+
+  doAtInterval(callback, tick, rate) {
+    this.time = this.time || tick.time;
+
+    let newTime = tick.time;
+   
+    if (newTime - this.time > rate) {
+      callback();
+      this.time = newTime;
+    }
   }
 }

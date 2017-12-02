@@ -1,25 +1,21 @@
 import { Stage, Sound, Text, Ticker, Bitmap } from "createjs-module";
 
-import { SCENES, WIDTH, HEIGHT, FULL_HEIGHT,FULL_WIDTH } from "./constants";
+import { SCENES, WIDTH, HEIGHT, FULL_HEIGHT, FULL_WIDTH } from "./constants";
 
 import { Keyboard } from "./modules/input";
-import { PlayScene, MenuScene } from "./modules/scene";
+import { PlayScene, MenuScene, EndScene } from "./modules/scene";
 import { Button } from "./modules/common";
 
-import assetManager from "./asset_store";
+import { assetManager } from "./asset_store";
 
 class Game {
   Play() {
     console.log("Started New Game ");
-
     this.canvas = document.getElementById("canvas");
     this.stage = new Stage(this.canvas);
     this.input = new Keyboard();
     this.input.listenTo(window);
-    assetManager.on("complete", e => {
-      console.info("ASSET LOADING FINISHED");
-      this.Init();
-    });
+    this.Init();
   }
 
   Init() {
@@ -36,14 +32,35 @@ class Game {
   }
 
   Main() {
-    this.scene = new PlayScene();
-    // this.scene = new MenuScene();
+    // this.scene = new PlayScene();
+    console.log("testing game main");
+    this.scene = new MenuScene();
     this.stage.setBounds(0, 0, FULL_WIDTH, FULL_HEIGHT);
     // this.scene.regX = WIDTH / 2;
     // this.scene.regY = HEIGHT / 2;
     // this.scene.x = WIDTH/2;
     // this.scene.y = HEIGHT/2;
     // this.scene.rotation = 180;
+    this.stage.addChild(this.scene);
+  }
+
+  setScene(scene) {
+    this.stage.removeAllChildren();
+    switch (scene) {
+      case SCENES.START:
+        this.scene = new MenuScene();
+        break;
+      case SCENES.PLAY:
+        this.scene = new PlayScene();
+        break;
+      case SCENES.END:
+        this.scene = new EndScene();
+        break;
+      default:
+        this.scene = new MenuScene();
+        break;
+    }
+
     this.stage.addChild(this.scene);
   }
 }

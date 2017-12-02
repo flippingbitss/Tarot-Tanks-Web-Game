@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* This is how you use the environments variables passed by the webpack.DefinePlugin */
-
+import {assetManager} from './js/asset_store'
 import game from './js/main';
 
 /**
@@ -33,4 +33,8 @@ if (process.env.DEVTOOLS && process.env.NODE_ENV !== 'production') {
 
 /** This is where the "real code" start */
 
-game.Play();
+assetManager.on("complete", e => {
+  console.info("ASSET LOADING FINISHED");
+  game.Play();
+});
+

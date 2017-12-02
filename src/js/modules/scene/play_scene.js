@@ -1,12 +1,13 @@
 import { Container, Text, Bitmap, Shape, Stage, Sprite } from "createjs-module";
 import { Util, Vector2 } from "../../utils";
 
-import { WIDTH, HEIGHT, FULL_HEIGHT, FULL_WIDTH, TILE_SIZE, FONT_FAMILY } from "../../constants";
+import { WIDTH, HEIGHT, FULL_HEIGHT, FULL_WIDTH, TILE_SIZE, FONT_FAMILY, SCENES } from "../../constants";
 import { ProgressBar, Label } from "../common";
 import { Player, Enemy } from "../objects";
 import TileMap from "../map/tile_map";
 import Camera from "../map/camera";
 import assetManager from "../../asset_store";
+import game from "../../main";
 
 export class PlayScene extends Stage {
   constructor(args) {
@@ -16,19 +17,57 @@ export class PlayScene extends Stage {
 
     this.players = [];
     this.enemies = [];
-
+    
     // this.stage.scaleX = 0.5;
     // this.stage.scaleY = 0.5;
     this.Main();
   }
 
   Main() {
-    window.camera = this.camera = new Camera(this.tileMap, WIDTH, HEIGHT);
-    console.log(this.camera);
-    // let ground = new Shape();
-    // ground.graphics.beginFill("lightgreen").drawRect(0, 0, WIDTH, HEIGHT);
-    // ground.x = 0;
-    // ground.y = 0;
+   this.camera = new Camera(this.tileMap, WIDTH, HEIGHT);
+   this.stage.snapToPixel = true;
+    this.addGround();
+    this.addPlayers();
+    
+    this.currentTarotCard = new Label("The Magician", 30, FONT_FAMILY, "red", 1080, 30);
+    this.centerMark = new Shape();
+
+    // this.HUD.addChild(bar);
+    // this.addChild(this.HUD);    
+    // this.addChild(this.centerMark);
+    this.addChild(this.currentTarotCard);
+  }
+
+
+  addPlayers(){
+    const half = TILE_SIZE / 2;
+    
+    this.players.push(
+      new Player("playerGreen",4 * TILE_SIZE - half, 11 * TILE_SIZE - half, 8, this, 0),
+      new Player("playerYellow",18 * TILE_SIZE - half, 11 * TILE_SIZE - half, 8, this, 1)
+    );
+
+    this.enemies.push(
+      new Enemy("enemyRed",6 * TILE_SIZE + half, 5 * TILE_SIZE + half, 5, this, [[6, 5], [14, 5]])
+    );
+    // this.HUD = new Container();
+
+    this.p1Health = new ProgressBar("P1 Health", 1, 100, 30, false);
+    this.p2Health = new ProgressBar("P2 Health", 1, 950, 30, false);
+
+
+    this.addChild(...this.enemies);
+    this.addChild(...this.players);
+    this.addChild(this.p1Health);
+    this.addChild(this.p2Health);
+
+
+    for (let p of this.players) {
+      p.onDestroy(this.handlePlayerDeath);
+    }
+  }
+
+  addGround(){
     this.ground = new Container();
     this.addChild(this.ground);
     for (let i = 0; i < this.tileMap.rows; i++) {
@@ -58,44 +97,14 @@ export class PlayScene extends Stage {
     // this.ground.stage.update();
     this.ground.cache(0, 0, FULL_WIDTH, FULL_HEIGHT);
 
-    const half = TILE_SIZE / 2;
-    this.players.push(
-      new Player(4 * TILE_SIZE - half, 11 * TILE_SIZE - half, 8, this, 0),
-      new Player(18 * TILE_SIZE - half, 11 * TILE_SIZE - half, 8, this, 1)
-    );
-    // this.player = new Player(6 * TILE_SIZE - half, 8 * TILE_SIZE - half, 5, this);
-
-    this.enemies.push(
-      new Enemy(6 * TILE_SIZE + half, 5 * TILE_SIZE + half, 5, this, [[6, 5], [14, 5]])
-    );
-    this.stage.snapToPixel = true;
-
-    this.centerMark = new Shape();
-
-    // this.HUD = new Container();
-
-    this.p1Health = new ProgressBar("P1 Health", 1, 100, 30, false);
-    this.p2Health = new ProgressBar("P2 Health", 1, 950, 30, false);
-    this.currentTarotCard = new Label("The Magician", 30, FONT_FAMILY, "red", 1080, 30);
-
-    // this.HUD.addChild(bar);
-
-    this.addChild(...this.enemies);
-    this.addChild(...this.players);
-    // this.addChild(this.centerMark);
-    this.addChild(this.p1Health);
-    this.addChild(this.p2Health);
-    this.addChild(this.currentTarotCard);
-    // this.addChild(this.HUD);
-
-    for (let p of this.players) {
-      p.onDestroy(this.handlePlayerDeath);
-    }
   }
 
   handlePlayerDeath(e, player) {
-    if (this.players.splice(this.players.findIndex(p => p.id == player.id)));
-    this.removeChild(player);
+    if(this.players.length){
+      this.players.splice(this.players.findIndex(p => p.id == player.id),1);
+      this.removeChild(player);
+      this.removeChild
+    }
   }
 
   inViewport(x, y) {
@@ -146,6 +155,9 @@ export class PlayScene extends Stage {
 
     this.p1Health.Update();
     this.p2Health.Update();
+
+    if(!this.players.length)
+        game.setScene(SCENES.END);
 
     this.stage.scaleX = this.camera.ZOOM;
     this.stage.scaleY = this.camera.ZOOM;

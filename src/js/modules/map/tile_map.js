@@ -1,5 +1,5 @@
 import { Sprite, SpriteSheet } from "createjs-module";
-import asset_store from "../../asset_store";
+import {assetManager} from "../../asset_store";
 import { TILE_SIZE } from "../../constants";
 import game from "../../main";
 
@@ -13,7 +13,7 @@ export default class TileMap {
     this.solidTiles = [0.1, 1, 100];
 
     this.tileSet = new SpriteSheet({
-      images: [asset_store.getResult("map_spritesheet")],
+      images: [assetManager.getResult("map_spritesheet")],
       frames: {
         width: this.tileSize,
         height: this.tileSize,

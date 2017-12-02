@@ -1,6 +1,6 @@
-import { Text } from "createjs-module";
+import { Text, Shape } from "createjs-module";
 
-export class Label extends Text {
+export class LabelButton extends Text {
   /**
    * Creates an instance of Label.
    * @param {string} labelstring
@@ -21,5 +21,19 @@ export class Label extends Text {
 
     this.x = x;
     this.y = y;
+
+    let hitArea = new Shape();
+
+    hitArea.graphics
+      .beginFill("white")
+      .drawRect(0, 0, this.getMeasuredWidth(), this.getMeasuredHeight()).endFill();
+
+    this.hitArea = hitArea;
+    this.on("mouseover", () => {
+      this.alpha = 0.8;
+    });
+    this.on("mouseout", () => {
+      this.alpha = 1;
+    });
   }
 }

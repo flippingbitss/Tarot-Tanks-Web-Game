@@ -1,10 +1,15 @@
-import createjs from "createjs-module";
-import { MANIFEST } from "./constants";
+import createjs, { SpriteSheet } from "createjs-module";
+import { MANIFEST, SPRITES_SPEC } from "./constants";
 
 // fix to enable event loading for preloadjs
-window.createjs = createjs
+window.createjs = createjs;
+
 const assetManager = new createjs.LoadQueue(true);
 assetManager.loadManifest(MANIFEST);
-window.assetManager = assetManager;
 
-export default assetManager
+let gameSpritesheet;
+assetManager.on("complete", () => {
+  gameSpritesheet = new SpriteSheet(SPRITES_SPEC);
+});
+
+export { assetManager, gameSpritesheet };

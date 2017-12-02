@@ -3,12 +3,11 @@ import { Keyboard } from "../input";
 import { DIR, KEYS, HEIGHT, WIDTH, FULL_HEIGHT, FULL_WIDTH, TAGS } from "../../constants";
 import { Vector2, Util } from "../../utils";
 import { GameObject, Bullet } from ".";
-import assetManager from "../../asset_store";
 import game from "../../main";
 
 export class Player extends GameObject {
-  constructor(x, y, speed = 5, scene, playerNum) {
-    super(assetManager.getResult("player"), x, y, speed, scene);
+  constructor(animName, x, y, speed = 5, scene, playerNum) {
+    super(animName, x, y, speed, scene);
 
     this.movement = [false, false, false, false];
     this.bullets = [];
@@ -25,7 +24,12 @@ export class Player extends GameObject {
       pos.x = Util.clamp(pos.x, width / 2, FULL_WIDTH - width / 2);
       pos.y = Util.clamp(pos.y, height / 2, FULL_HEIGHT - height / 2);
 
-      if (!this.isColliding(pos)) this.pos = pos;
+      if (!this.isColliding(pos)) {
+        this.pos = pos;
+        if (this.paused) this.play();
+      }
+    } else {
+      if (!this.paused) this.stop();
     }
 
     this._UpdateBullets();
@@ -47,14 +51,7 @@ export class Player extends GameObject {
   }
 
   Shoot() {
-    let bullet = new Bullet(
-      assetManager.getResult("bullet"),
-      this.x,
-      this.y,
-      true,
-      this.forward,
-      TAGS.PLAYER
-    );
+    let bullet = new Bullet("bullet", this.x, this.y, 20, this.scene, this.forward, TAGS.PLAYER);
 
     this.stage.addChild(bullet);
     bullet.onDestroyed(this.handleBulletDestruction);
@@ -62,20 +59,20 @@ export class Player extends GameObject {
   }
 
   /**
-   * @param {Event} e 
-   * @param {Bullet} bullet 
+   * @param {Event} e
+   * @param {Bullet} bullet
    * @memberof Player
    */
   handleBulletDestruction(e, bullet) {
-    console.log("in handle bullet ");
-    const isAtMyPosition = this.scene.tileMap.isPointInTile(
-      bullet.pos.x,
-      bullet.pos.y,
-      this.scene.tileMap.getTileCoordRaw(this.pos.x, this.pos.y)
-    );
-    console.log(isAtMyPosition);
+    if (bullet.owner != TAGS.PLAYER) {
+      const isAtMyPosition = this.scene.tileMap.isPointInTile(
+        bullet.pos.x,
+        bullet.pos.y,
+        this.scene.tileMap.getTileCoordRaw(this.pos.x, this.pos.y)
+      );
 
-    if (isAtMyPosition) this.takeDamage();
+      if (isAtMyPosition) this.takeDamage();
+    }
 
     this.bullets = this.bullets.filter(b => b.isAlive);
     this.stage.removeChild(bullet);

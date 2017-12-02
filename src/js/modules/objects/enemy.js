@@ -11,11 +11,10 @@ import {
 } from "../../constants";
 import { Vector2, Util } from "../../utils";
 import { GameObject, Bullet } from ".";
-import assetManager from "../../asset_store";
 
 export class Enemy extends GameObject {
-  constructor(x, y, speed, scene, waypoints) {
-    super(assetManager.getResult("enemy"), x, y, speed, scene);
+  constructor(animName, x, y, speed, scene, waypoints) {
+    super(animName, x, y, speed, scene);
 
     let { width, height } = this.getBounds();
     this.setBounds(x, y, TILE_SIZE, TILE_SIZE);
@@ -91,7 +90,7 @@ export class Enemy extends GameObject {
     this.stage.update();
   }
   /**
-   * @param {Vector2} pos 
+   * @param {Vector2} pos
    * @memberof Enemy
    */
   followTarget(pos) {
@@ -116,13 +115,14 @@ export class Enemy extends GameObject {
 
   shoot() {
     let bullet = new Bullet(
-      assetManager.getResult("bullet"),
+      "bullet",
       this.x,
-      this.y,
-      true,
+      this.y, 20,
+      this.scene,
       this.forward,
       TAGS.ENEMY
     );
+
 
     bullet.onCollision(this.onBulletCollision);
     bullet.onDestroyed(this.onBulletDestroy);

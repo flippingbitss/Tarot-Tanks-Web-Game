@@ -2,46 +2,30 @@ import { Bitmap, Ticker, Shape } from "createjs-module";
 import { Vector2 } from "../../utils";
 import { DIR, FULL_WIDTH, FULL_HEIGHT, TAGS } from "../../constants";
 import game from "../../main";
+import { GameObject } from "./index";
 
-export class Bullet extends Shape {
-  /**
-     * Creates an instance of Button.
-     *
-     * @param {any} image
-     * @param {number} x
-     * @param {number} y
-     * @param {boolean} isCentered
-     */
+export class Bullet extends GameObject {
 
-  constructor(image, x, y, isCentered, dir, owner = TAGS.ENEMY) {
-    super();
-
-    this.graphics.beginFill("red").drawCircle(this.x, this.y, 6);
-
+  constructor(animName, x, y, speed = 20, scene, dir, owner = TAGS.ENEMY) {
+    super(animName, x, y, speed, scene);
+    
     // if (isCentered) {
     //   let bounds = this.getBounds();
     //   this.regX = bounds.width * 0.5;
     //   this.regY = bounds.height * 0.5;
     // }
-    this.owner = owner;
-    this._position = new Vector2(x, y);
-    this.pos = this._position;
-    this.forward = dir;
-    this.speed = 10;
 
+    this.scaleX = 0.3;
+    this.scaleY = 0.3;
+
+    this.owner = owner;
+    this.forward = dir;
+  
     this.hitObj = { value: null };
     this.isAlive = true;
+
+    this.rotation = 360 - this.forward.atan2(Vector2.Down) * 180 / Math.PI
     // Ticker.on("tick", this.Update);
-  }
-
-  get pos() {
-    return this._position;
-  }
-
-  set pos(newPos) {
-    this.x = newPos.x;
-    this.y = newPos.y;
-    this._position = newPos;
   }
 
   onDestroyed(callback) {

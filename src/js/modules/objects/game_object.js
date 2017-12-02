@@ -1,12 +1,14 @@
-import { Bitmap, TickerEvent } from "createjs-module";
+import { Bitmap, TickerEvent, Sprite } from "createjs-module";
 import { TILE_SIZE, FULL_HEIGHT, FULL_WIDTH } from "../../constants";
-import { Vector2 ,Util} from "../../utils";
-import assetManager from "../../asset_store";
+import { Vector2 ,Util } from "../../utils";
+import {gameSpritesheet} from "../../asset_store";
 
-export class GameObject extends Bitmap {
-  constructor(image, x, y, speed = 5, scene) {
-    super(image);
+export class GameObject extends Sprite {
+  constructor(frameOrAnimation, x, y, speed = 5, scene) {
+    super(gameSpritesheet, frameOrAnimation);
 
+    this.stop();
+    
     this.regX = this.getBounds().width * 0.5;
     this.regY = this.getBounds().height * 0.5;
 
@@ -18,9 +20,7 @@ export class GameObject extends Bitmap {
     this.speed = speed;
 
     this.tileType = 100
-
     this.health = 10;
-
     this.scene = scene;
   }
 
