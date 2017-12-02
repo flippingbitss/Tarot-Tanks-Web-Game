@@ -5,6 +5,7 @@ import { MANIFEST, SPRITES_SPEC } from "./constants";
 window.createjs = createjs;
 
 const assetManager = new createjs.LoadQueue(true);
+assetManager.installPlugin(createjs.Sound);
 assetManager.loadManifest(MANIFEST);
 
 let gameSpritesheet;

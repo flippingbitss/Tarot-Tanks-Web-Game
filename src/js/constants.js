@@ -11,7 +11,13 @@ export const MANIFEST = [
   { id: "tile_set", src: "/assets/images/sprite_sheet.png" },
   { id: "menu_background", src: "/assets/images/menu_background.jpg" },
   { id: "map_spritesheet", src: "/assets/images/map_spritesheet.png" },
-  { id: "enemy", src: "/assets/images/enemyred.png" }
+  { id: "enemy", src: "/assets/images/enemyred.png" },
+
+  {id: "bullet_hit", src:"./assets/audio/bullet_hit.mp3"},
+  {id: "start_screen", src:"./assets/audio/start_screen.mp3"},
+  {id: "main_1", src:"./assets/audio/main_1.mp3"},
+  // {id: "thunder", src:"./Assets/audio/thunder.ogg"},
+  // {id: "yay", src:"./Assets/audio/yay.ogg"}
 ];
 
 export const SPRITES_SPEC = {

@@ -1,4 +1,4 @@
-import { Bitmap, Ticker, Shape } from "createjs-module";
+import { Bitmap, Ticker, Shape, Sound } from "createjs-module";
 import { Vector2 } from "../../utils";
 import { DIR, FULL_WIDTH, FULL_HEIGHT, TAGS } from "../../constants";
 import game from "../../main";
@@ -23,9 +23,10 @@ export class Bullet extends GameObject {
   
     this.hitObj = { value: null };
     this.isAlive = true;
-
     this.rotation = 360 - this.forward.atan2(Vector2.Down) * 180 / Math.PI
-    // Ticker.on("tick", this.Update);
+  
+    Sound.play("bullet_hit")
+    
   }
 
   onDestroyed(callback) {

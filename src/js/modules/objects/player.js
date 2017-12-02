@@ -4,6 +4,7 @@ import { DIR, KEYS, HEIGHT, WIDTH, FULL_HEIGHT, FULL_WIDTH, TAGS, TILE_SIZE } fr
 import { Vector2, Util } from "../../utils";
 import { GameObject, Bullet } from ".";
 import game from "../../main";
+import { assetManager } from "../../asset_store";
 
 export class Player extends GameObject {
   constructor(animName, x, y, speed = 5, scene, playerNum) {
@@ -52,7 +53,6 @@ export class Player extends GameObject {
 
   Shoot() {
     let bullet = new Bullet("bullet", this.x, this.y, 20, this.scene, this.forward, TAGS.PLAYER);
-
     this.stage.addChild(bullet);
     bullet.onDestroyed(this.handleBulletDestruction);
     bullet.onCollision(this.onBulletCollision);

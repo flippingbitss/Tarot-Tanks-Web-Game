@@ -1,4 +1,4 @@
-import { Stage, Text, Shape, Rectangle, Bitmap, Ticker } from "createjs-module";
+import { Stage, Text, Shape, Rectangle, Bitmap, Ticker, Sound } from "createjs-module";
 import { Button, Label } from "../common";
 import { WIDTH, HEIGHT, FONT_FAMILY, SCENES, FULL_WIDTH, FULL_HEIGHT } from "../../constants";
 import {assetManager} from '../../asset_store';
@@ -13,6 +13,8 @@ export class MenuScene extends Stage {
   }
 
   Main() {
+    this.bgMusic = Sound.play("start_screen",Sound.INTERRUPT_NONE,1,0,1000);
+
     this.colors = ["yellow","red","pink","blue","orange","green"]
 
     this.stage.scaleX = 1;
@@ -37,6 +39,7 @@ export class MenuScene extends Stage {
 
 
     startButton.on("click",e=>{
+      this.bgMusic.stop();
       game.setScene(SCENES.PLAY);
       // TODO implement sound
     })
@@ -62,7 +65,7 @@ export class MenuScene extends Stage {
     this.addChild(soundButton);
 
 
-
+   
   }
 
   Update(tick) {

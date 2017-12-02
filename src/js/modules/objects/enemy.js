@@ -123,7 +123,7 @@ export class Enemy extends GameObject {
       TAGS.ENEMY
     );
 
-
+    
     bullet.onCollision(this.onBulletCollision);
     bullet.onDestroyed(this.onBulletDestroy);
     this.bullets.push(bullet);

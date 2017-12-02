@@ -1,4 +1,4 @@
-import { Container, Text, Bitmap, Shape, Stage, Sprite } from "createjs-module";
+import { Container, Text, Bitmap, Shape, Stage, Sprite, Sound } from "createjs-module";
 import { Util, Vector2 } from "../../utils";
 
 import {
@@ -32,6 +32,7 @@ export class PlayScene extends Stage {
   }
 
   Main() {
+    this.bgMusic = Sound.play("main_1",Sound.INTERRUPT_NONE,1,0,1000);
     this.camera = new Camera(this.tileMap, WIDTH, HEIGHT);
     this.stage.snapToPixel = true;
     this.addGround();
@@ -167,8 +168,8 @@ export class PlayScene extends Stage {
     this.p1Health.Update();
     this.p2Health.Update();
 
-    if (!this.players.length) game.setScene(SCENES.END);
-    if (!this.enemies.length) game.setScene(SCENES.WON);
+    if (!this.players.length) this.transitionTo(SCENES.END);
+    if (!this.enemies.length) this.transitionTo(SCENES.WON);
 
     this.stage.scaleX = this.camera.ZOOM;
     this.stage.scaleY = this.camera.ZOOM;
@@ -177,5 +178,11 @@ export class PlayScene extends Stage {
     // this.stage.y = -this.camera.y;
 
     this.stage.update();
+  }
+
+
+  transitionTo(scene){
+    this.bgMusic.stop();
+    game.setScene(scene);
   }
 }
