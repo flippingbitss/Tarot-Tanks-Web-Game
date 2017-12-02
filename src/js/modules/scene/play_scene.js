@@ -32,7 +32,7 @@ export class PlayScene extends Stage {
   }
 
   Main() {
-    this.bgMusic = Sound.play("main_1",Sound.INTERRUPT_NONE,1,0,1000);
+    this.bgMusic = Sound.play("main_1", Sound.INTERRUPT_NONE, 1, 0, 1000);
     this.camera = new Camera(this.tileMap, WIDTH, HEIGHT);
     this.stage.snapToPixel = true;
     this.addGround();
@@ -55,8 +55,11 @@ export class PlayScene extends Stage {
 
     this.enemies.push(
       new Enemy("enemyRed", 6, 5, 5, this, [[6, 5], [14, 5]]),
-      new Enemy("enemyRed", 4, 2, 5, this, [[4, 2], [7, 2]]),
-      new Enemy("enemyRed", 16, 2, 5, this, [[13, 2], [16, 2]])
+      new Enemy("enemyRed", 4, 2, 5, this, [[4, 2], [7, 2], [7, 3], [4, 3]]),
+      new Enemy("enemyRed", 16, 2, 5, this, [[16, 2], [13, 2], [13, 3], [16, 3]]),
+
+      new Enemy("enemyRed", 7, 6, 5, this, [[7, 6], [4, 6], [1, 7], [1, 6]]),
+      new Enemy("enemyRed", 13, 6, 5, this, [[13, 6], [16, 6], [19, 7], [19,6]])
     );
     // this.HUD = new Container();
 
@@ -68,9 +71,8 @@ export class PlayScene extends Stage {
     this.addChild(this.p1Health);
     this.addChild(this.p2Health);
 
-
-    let handlePlayerDeath = (e, t) => this.handleTankDeath(e, t, this.players)
-    let handleEnemyDeath = (e, t) => this.handleTankDeath(e, t, this.enemies)
+    let handlePlayerDeath = (e, t) => this.handleTankDeath(e, t, this.players);
+    let handleEnemyDeath = (e, t) => this.handleTankDeath(e, t, this.enemies);
 
     for (let p of this.players) {
       p.onDestroy(handlePlayerDeath);
@@ -180,8 +182,7 @@ export class PlayScene extends Stage {
     this.stage.update();
   }
 
-
-  transitionTo(scene){
+  transitionTo(scene) {
     this.bgMusic.stop();
     game.setScene(scene);
   }
