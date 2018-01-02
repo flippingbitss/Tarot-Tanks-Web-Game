@@ -1,4 +1,4 @@
-export default class Camera {
+export class Camera {
   constructor(map, width, height) {
     this.x = 0;
     this.y = 0;

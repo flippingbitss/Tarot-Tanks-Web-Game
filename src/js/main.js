@@ -7,6 +7,7 @@ import { PlayScene, MenuScene, EndScene , WonScene} from "./modules/scene";
 import { Button } from "./modules/common";
 
 import { assetManager } from "./asset_store";
+import { Util } from "./utils";
 
 class Game {
   Play() {
@@ -44,14 +45,11 @@ class Game {
     this.stage.addChild(this.scene);
   }
 
-  setScene(scene) {
+  setScene(scene, level = 0) {
     this.stage.removeAllChildren();
     switch (scene) {
-      case SCENES.START:
-        this.scene = new MenuScene();
-        break;
       case SCENES.PLAY:
-        this.scene = new PlayScene();
+        this.scene = new PlayScene(level);
         break;
       case SCENES.WON:
         this.scene = new WonScene();
@@ -59,12 +57,17 @@ class Game {
       case SCENES.END:
         this.scene = new EndScene();
         break;
+      case SCENES.START:
       default:
         this.scene = new MenuScene();
         break;
     }
 
     this.stage.addChild(this.scene);
+  }
+
+  switchLevel(level){
+    this.setScene(SCENES.PLAY, Util.clamp(level,0,3))
   }
 }
 

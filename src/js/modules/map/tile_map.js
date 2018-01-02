@@ -1,15 +1,18 @@
 import { Sprite, SpriteSheet } from "createjs-module";
 import {assetManager} from "../../asset_store";
-import { TILE_SIZE } from "../../constants";
+import { TILE_SIZE, ROW_COUNT, COL_COUNT } from "../../constants";
 import game from "../../main";
 
-export default class TileMap {
-  constructor(scene) {
+export class TileMap {
+  constructor(scene, level) {
     this.tileSize = TILE_SIZE;
-    this.rows = 12;
-    this.cols = 21;
+
+    this.rows = ROW_COUNT;
+    this.cols = COL_COUNT;
 
     this.scene = scene;
+    this.level = level;
+
     this.solidTiles = [0.1, 1, 100];
 
     this.tileSet = new SpriteSheet({
@@ -25,24 +28,31 @@ export default class TileMap {
       }
     });
 
-    console.log(this.tileSet.getNumFrames());
+   // let transform = { 9: -1, 0: 0.1 };
+    let transform = { "-": -1, "d": 0.1, "." : 2, "#": 1 };
 
-    let transform = { 9: -1, 0: 0.1 };
-    // prettier-ignore
-    this.grid = [
-      9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9, 
-      1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1 ,1, 1, 1,  1,      
-      1, 0, 0, 0,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 0, 0, 0,  1, 
-      1, 0, 0, 0,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 0, 0, 0,  1, 
-      1, 0, 0, 0,  2, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  2, 0, 0, 0,  1,
-      1, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  1,
-      1, 2, 2, 2,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 2, 2, 2,  1,
-      1, 2, 2, 1,  1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  1, 1, 2, 2,  1,
-      1, 2, 2, 1,  1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  1, 1, 2, 2,  1,
-      1, 2, 2, 2,  2, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  2, 2, 2, 2,  1, 
-      1, 2, 2, 2,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 2, 2, 2,  1, 
-      1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1 ,1, 1, 1,  1
-    ].map(e=> e in transform ? transform[e] : e);
+    this.grid = level.map.split("\n").map(e=> e.trim()).join(" ").split(" ").map(e=>transform[e])
+
+   // prettier-ignore
+    // this.grid = [
+    //   9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9, 
+    //   1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1 ,1, 1, 1,  1,      
+    //   1, 0, 0, 0,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 0, 0, 0,  1, 
+    //   1, 0, 0, 0,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 0, 0, 0,  1, 
+    //   1, 0, 0, 0,  2, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  2, 0, 0, 0,  1,
+    //   1, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  1,
+    //   1, 2, 2, 2,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 2, 2, 2,  1,
+    //   1, 2, 2, 1,  1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  1, 1, 2, 2,  1,
+    //   1, 2, 2, 1,  1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  1, 1, 2, 2,  1,
+    //   1, 2, 2, 2,  2, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  2, 2, 2, 2,  1, 
+    //   1, 2, 2, 2,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 2, 2, 2,  1, 
+    //   1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1 ,1, 1, 1,  1
+    // ].map(e=> e in transform ? transform[e] : e);
+
+
+    
+
+
 
     // // prettier-ignore
 

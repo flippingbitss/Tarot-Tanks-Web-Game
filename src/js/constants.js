@@ -6,6 +6,9 @@ export const FULL_HEIGHT = HEIGHT * 2;
 
 export const TILE_SIZE = 120;
 
+export const ROW_COUNT = 12;
+export const COL_COUNT = 21;
+
 export const MANIFEST = [
   { id: "player", src: "/assets/images/player_tank.png" },
   { id: "tile_set", src: "/assets/images/sprite_sheet.png" },

@@ -1,19 +1,38 @@
 import { Bitmap, Ticker, Tween, Event } from "createjs-module";
 import { Keyboard } from "../input";
-import { DIR, KEYS, HEIGHT, WIDTH, FULL_HEIGHT, FULL_WIDTH, TAGS, TILE_SIZE } from "../../constants";
+import {
+  DIR,
+  KEYS,
+  HEIGHT,
+  WIDTH,
+  FULL_HEIGHT,
+  FULL_WIDTH,
+  TAGS,
+  TILE_SIZE
+} from "../../constants";
 import { Vector2, Util } from "../../utils";
 import { GameObject, Bullet } from ".";
 import game from "../../main";
+import config from "../../config";
 import { assetManager } from "../../asset_store";
 
 export class Player extends GameObject {
-  constructor(animName, x, y, speed = 5, scene, playerNum) {
-    super(animName, x * TILE_SIZE - TILE_SIZE/2, y * TILE_SIZE - TILE_SIZE / 2, speed, scene);
+  constructor(playerData, config, scene, playerNum, healthBar) {
+    const { sprite, pos } = playerData;
+
+    super(
+      sprite,
+      pos[0] * TILE_SIZE - TILE_SIZE / 2,
+      pos[1] * TILE_SIZE - TILE_SIZE / 2,
+      config.speed,
+      scene
+    );
 
     this.movement = [false, false, false, false];
     this.bullets = [];
     this.playerNum = playerNum;
     this.tag = TAGS.PLAYER;
+    this.healthBar = healthBar;
     this.Main();
   }
 
@@ -59,7 +78,6 @@ export class Player extends GameObject {
     this.bullets.push(bullet);
   }
 
-
   onBulletCollision(e, data) {
     let { bullet, hitObj: { value: obj } } = data;
 
@@ -75,16 +93,6 @@ export class Player extends GameObject {
    * @memberof Player
    */
   handleBulletDestruction(e, bullet) {
-    // if (bullet.owner != TAGS.PLAYER) {
-    //   const isAtMyPosition = this.scene.tileMap.isPointInTile(
-    //     bullet.pos.x,
-    //     bullet.pos.y,
-    //     this.scene.tileMap.getTileCoordRaw(this.pos.x, this.pos.y)
-    //   );
-
-    //   if (isAtMyPosition) this.takeDamage();
-    // }
-
     this.bullets = this.bullets.filter(b => b.isAlive);
     this.stage.removeChild(bullet);
   }
@@ -99,6 +107,7 @@ export class Player extends GameObject {
 
   takeDamage() {
     this.health = Math.max(0, --this.health);
+    this.healthBar.progress = this.health / 10;
     if (this.health <= 0) {
       this.dispatchEvent("playerDead");
     }

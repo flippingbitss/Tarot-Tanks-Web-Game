@@ -10,18 +10,24 @@ import {
   FONT_FAMILY,
   SCENES
 } from "../../constants";
+
 import { ProgressBar, Label } from "../common";
 import { Player, Enemy } from "../objects";
-import TileMap from "../map/tile_map";
-import Camera from "../map/camera";
+import { Camera, TileMap } from "../map";
 import assetManager from "../../asset_store";
+import config from "../../config";
 import game from "../../main";
 
 export class PlayScene extends Stage {
-  constructor(args) {
-    super(args);
-    this.walls = [];
-    this.tileMap = new TileMap(this);
+  constructor(level) {
+    console.log("creating play scene", level);
+    super();
+
+    this.level = config.levels[level];
+
+    this.tarotConfig = { ...config.tarotsConfig.default };
+    this.currentTarotCard = null;
+    this.tileMap = new TileMap(this, this.level);
 
     this.players = [];
     this.enemies = [];
@@ -32,13 +38,15 @@ export class PlayScene extends Stage {
   }
 
   Main() {
-    this.bgMusic = Sound.play("main_1", Sound.INTERRUPT_NONE, 1, 0, 1000);
+    this.bgMusic = Sound.play(this.level.soundConfig.bgMusic, Sound.INTERRUPT_NONE, 1, 0, 1000);
+
     this.camera = new Camera(this.tileMap, WIDTH, HEIGHT);
     this.stage.snapToPixel = true;
+
     this.addGround();
     this.addTanks();
 
-    this.currentTarotCard = new Label("The Magician", 30, FONT_FAMILY, "red", 1080, 30);
+    this.tarotCardLabel = new Label("The Magician", 30, FONT_FAMILY, "red", 1080, 30);
     this.centerMark = new Shape();
 
     // this.HUD.addChild(bar);
@@ -47,96 +55,13 @@ export class PlayScene extends Stage {
     this.addChild(this.currentTarotCard);
   }
 
-  addTanks() {
-    this.players.push(
-      new Player("playerGreen", 4, 11, 8, this, 0),
-      new Player("playerYellow", 18, 11, 8, this, 1)
-    );
-
-    this.enemies.push(
-      new Enemy("enemyRed", 6, 5, 5, this, [[6, 5], [14, 5]]),
-      new Enemy("enemyRed", 4, 2, 5, this, [[4, 2], [7, 2], [7, 3], [4, 3]]),
-      new Enemy("enemyRed", 16, 2, 5, this, [[16, 2], [13, 2], [13, 3], [16, 3]]),
-
-      new Enemy("enemyRed", 7, 6, 5, this, [[7, 6], [4, 6], [1, 7], [1, 6]]),
-      new Enemy("enemyRed", 13, 6, 5, this, [[13, 6], [16, 6], [19, 7], [19,6]])
-    );
-    // this.HUD = new Container();
-
-    this.p1Health = new ProgressBar("P1 Health", 1, 100, 30, false);
-    this.p2Health = new ProgressBar("P2 Health", 1, 950, 30, false);
-
-    this.addChild(...this.enemies);
-    this.addChild(...this.players);
-    this.addChild(this.p1Health);
-    this.addChild(this.p2Health);
-
-    let handlePlayerDeath = (e, t) => this.handleTankDeath(e, t, this.players);
-    let handleEnemyDeath = (e, t) => this.handleTankDeath(e, t, this.enemies);
-
-    for (let p of this.players) {
-      p.onDestroy(handlePlayerDeath);
-    }
-
-    for (let e of this.enemies) {
-      e.onDestroy(handleEnemyDeath);
-    }
-  }
-
-  addGround() {
-    this.ground = new Container();
-    this.addChild(this.ground);
-    for (let i = 0; i < this.tileMap.rows; i++) {
-      for (let j = 0; j < this.tileMap.cols; j++) {
-        let tileType = this.tileMap.getTileType(i, j);
-        if (tileType == -1) continue;
-        let tile = new Sprite(this.tileMap.tileSet);
-        tile.gotoAndStop(tileType);
-        tile.x = j * TILE_SIZE;
-        tile.y = i * TILE_SIZE;
-
-        // let text = new Text(`${j},${i}`, "20px Arial", "#ff7700");
-        // text.x = j * TILE_SIZE;
-        // text.y = i * TILE_SIZE;
-
-        // let border = new Shape();
-        // border.graphics.beginStroke("red").drawRect(text.x, text.y, TILE_SIZE, TILE_SIZE);
-        this.ground.addChild(tile);
-        // this.stage.addChild(tile);
-        // this.ground.addChild(text)
-        // this.stage.addChild(border)
-        // this.stage.update();
-        // tile.cache(tile.x,tile.y, 120,120)
-      }
-    }
-
-    // this.ground.stage.update();
-    this.ground.cache(0, 0, FULL_WIDTH, FULL_HEIGHT);
-  }
-
-  handleTankDeath(e, deadTank, tanks) {
-    if (tanks.length) {
-      tanks.splice(tanks.findIndex(t => t.id == deadTank.id), 1);
-      this.removeChild(deadTank);
-    }
-  }
-
-  inViewport(x, y) {
-    const tsize = TILE_SIZE;
-
-    // let ceiledX = Math.floor(x + tsize)
-    return (
-      x + tsize > this.camera.x - tsize &&
-      x < this.camera.x + WIDTH + tsize &&
-      (y + tsize > this.camera.y - tsize && y < this.camera.y + HEIGHT + tsize)
-    );
-  }
-
   Update(e) {
     // for (let i = 0; i < this.ground.numChildren; i++) {
     //   let element = this.ground.getChildAt(i);
     //   element.visible = this.inViewport(element.x, element.y);
     // }
+
+    //  Util.doAtInterval(this.switchCard, Math.random() * 10 + 5);
 
     for (let player of this.players) player.Update(e);
     for (let enemy of this.enemies) enemy.Update(e);
@@ -163,13 +88,10 @@ export class PlayScene extends Stage {
 
     // this.bar.scaleX = 0.5;
     // this.bar.scaleY = 0.5;
-
-    this.p1Health.progress = ((this.players[0] && this.players[0].health) || 0) / 10;
-    this.p2Health.progress = ((this.players[1] && this.players[1].health) || 0) / 10;
-
     this.p1Health.Update();
     this.p2Health.Update();
 
+    // win lose triggers
     if (!this.players.length) this.transitionTo(SCENES.END);
     if (!this.enemies.length) this.transitionTo(SCENES.WON);
 
@@ -185,5 +107,109 @@ export class PlayScene extends Stage {
   transitionTo(scene) {
     this.bgMusic.stop();
     game.setScene(scene);
+  }
+
+  addTanks() {
+    const { enemyConfig, playerConfig } = this.level;
+    const { player1: p1, player2: p2 } = playerConfig;
+
+    this.p1Health = new ProgressBar("P1", 1, 100, 30, false);
+    this.p2Health = new ProgressBar("P2", 1, 950, 30, false);
+
+    this.players.push(
+      new Player(p1, playerConfig, this, 0, this.p1Health),
+      new Player(p2, playerConfig, this, 1, this.p2Health)
+    );
+
+    this.enemies = enemyConfig.enemies.map(e => new Enemy(enemyConfig, e, this));
+    // this.HUD = new Container();
+
+    this.addChild(...this.enemies);
+    this.addChild(...this.players);
+    this.addChild(this.p1Health);
+    this.addChild(this.p2Health);
+
+    let handlePlayerDeath = (e, t) => this.handleTankDeath(e, t, this.players);
+    let handleEnemyDeath = (e, t) => this.handleTankDeath(e, t, this.enemies);
+
+    for (let p of this.players) {
+      p.onDestroy(handlePlayerDeath);
+    }
+
+    for (let e of this.enemies) {
+      e.onDestroy(handleEnemyDeath);
+    }
+  }
+
+  addGround() {
+    this.ground = new Container();
+    this.addChild(this.ground);
+    for (let i = 0; i < this.tileMap.rows; i++) {
+      for (let j = 0; j < this.tileMap.cols; j++) {
+        let tileType = this.tileMap.getTileType(i, j);
+        console.log(tileType);
+        if (tileType == -1) continue;
+        let tile = new Sprite(this.tileMap.tileSet);
+        tile.gotoAndStop(tileType);
+        tile.x = j * TILE_SIZE;
+        tile.y = i * TILE_SIZE;
+        this.ground.addChild(tile);
+      }
+    }
+    this.ground.cache(0, 0, FULL_WIDTH, FULL_HEIGHT);
+  }
+
+  handleTankDeath(e, deadTank, tanks) {
+    if (tanks.length) {
+      tanks.splice(tanks.findIndex(t => t.id == deadTank.id), 1);
+      this.removeChild(deadTank);
+    }
+  }
+
+  inViewport(x, y) {
+    const tsize = TILE_SIZE;
+
+    return (
+      x + tsize > this.camera.x - tsize &&
+      x < this.camera.x + WIDTH + tsize &&
+      (y + tsize > this.camera.y - tsize && y < this.camera.y + HEIGHT + tsize)
+    );
+  }
+
+  drawTarotCard() {
+    let allCards = config.tarotsConfig.cards;
+
+    let fitnessSum = allCards.reduce((a, b) => a + b.pickupScore, 0);
+
+    let randomWeight = Math.random() * fitnessSum;
+    let cumulative = 0;
+
+    // roulette wheel selection for handling the probability distribution
+    let resultCard = allCards[0];
+    for (let card of allCards) {
+      cumulative += card.pickupScore;
+      if (cumulative >= randomWeight) {
+        resultCard = card;
+        break;
+      }
+    }
+
+    return resultCard;
+  }
+
+  switchCard() {
+    let card = this.drawTarotCard();
+
+    while (card != this.currentTarotCard) {
+      card = this.drawTarotCard();
+    }
+
+    this.applyCard(card);
+
+    this.tarotCardLabel.text = card.name;
+  }
+
+  applyCard(card) {
+    let newConfig = { ...config.tarotsConfig.default, ...card.trait };
   }
 }
