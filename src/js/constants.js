@@ -57,6 +57,16 @@ export const SPRITES_SPEC = {
     [280, 240, 120, 120],
     [280, 360, 120, 120],
     [280, 480, 120, 120],
+    
+    // enemy yellow
+    [400, 0, 120, 120],
+    [520, 0, 120, 120],
+    [400, 120, 120, 120],
+
+    // enemy green
+    [640, 360, 120, 120],
+    [760, 360, 120, 120],
+    [640, 480, 120, 120],
 
     // bullet
     [0, 0, 40, 120]
@@ -67,7 +77,9 @@ export const SPRITES_SPEC = {
     playerYellow: { frames: [6, 7, 8, 9, 10, 11], speed },
     playerRed: { frames: [12, 13, 14, 15, 16, 17], speed },
     enemyRed: { frames: [18, 19, 20], speed },
-    bullet: [21]
+    enemyYellow: { frames: [21, 22, 23], speed },
+    enemyGreen: { frames: [24, 25, 26], speed },
+    bullet: [27]
   }
 
   // {

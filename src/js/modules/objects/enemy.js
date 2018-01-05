@@ -13,12 +13,18 @@ import { Vector2, Util } from "../../utils";
 import { GameObject, Bullet } from ".";
 
 export class Enemy extends GameObject {
-  constructor(enemyConfig, enemyData, scene) {
-    const [x,y] = enemyData.pos;
-    super(enemyConfig.sprite, x* TILE_SIZE + TILE_SIZE / 2, y * TILE_SIZE + TILE_SIZE / 2, enemyConfig.speed, scene);
+  constructor(enemyTraits, enemyData, scene) {
+    const [x, y] = enemyData.pos;
+    super(
+      enemyTraits.sprite,
+      x * TILE_SIZE + TILE_SIZE / 2,
+      y * TILE_SIZE + TILE_SIZE / 2,
+      enemyTraits.speed,
+      scene
+    );
 
     this.tag = TAGS.ENEMY;
-    this.followRange = enemyConfig.followRange;
+    this.traits = enemyTraits;
 
     let { width, height } = this.getBounds();
     this.setBounds(x, y, TILE_SIZE, TILE_SIZE);
@@ -54,7 +60,7 @@ export class Enemy extends GameObject {
 
   Update(tick) {
     this.stop();
-    let closestPlayer = this.getClosestInRange(this.scene.players, this.followRange);
+    let closestPlayer = this.getClosestInRange(this.scene.players, this.traits.followRange);
     if (closestPlayer) {
       // this._continueShoot();
       this.doAtInterval(this.shoot, tick, 1000);
@@ -84,7 +90,7 @@ export class Enemy extends GameObject {
 
       this.patrol();
     }
-    this.Move();
+    this.Move(tick);
 
     for (let bullet of this.bullets) {
       bullet.Update();
@@ -99,8 +105,9 @@ export class Enemy extends GameObject {
     let [targetX, targetY] = [pos.x, pos.y];
 
     let currentTile = this._getCurrentTile();
-
     let dir = currentTile.clone();
+
+//    const tolerance = 0.05;
 
     if (targetX != currentTile.x) {
       dir.x = targetX;
@@ -116,9 +123,10 @@ export class Enemy extends GameObject {
   }
 
   shoot() {
-    let bullet = new Bullet("bullet", this.x, this.y, 20, this.scene, this.forward, TAGS.ENEMY);
+    let bullet = new Bullet(this.x, this.y, 20, this.scene, this.forward, TAGS.ENEMY);
 
     bullet.onCollision(this.onBulletCollision);
+    bullet.onCollisionDestructible(this.OnBulletCollisionDestructible);
     bullet.onDestroyed(this.onBulletDestroy);
     this.bullets.push(bullet);
     this.stage.addChild(bullet);
@@ -130,8 +138,6 @@ export class Enemy extends GameObject {
 
   onBulletCollision(e, data) {
     let { bullet, hitObj: { value: obj } } = data;
-
-    console.log("hitobj", obj);
     if (obj && obj.tag == TAGS.PLAYER) {
       obj.takeDamage();
     }
@@ -174,6 +180,16 @@ export class Enemy extends GameObject {
 
   takeDamage() {
     this.health = Math.max(0, --this.health);
+    const startHealth = this.traits.health;
+
+    if (this.health <= startHealth * 1 / 3) {
+      this.gotoAndPlay("enemyGreen");
+    } else if (this.health > startHealth * 1 / 3 && this.health <= startHealth * 2 / 3) {
+      this.gotoAndPlay("enemyYellow");
+    } else if (this.health > startHealth * 2 / 3) {
+      this.gotoAndPlay("enemyRed");
+    }
+
     if (this.health <= 0) {
       this.dispatchEvent("enemyDead");
     }

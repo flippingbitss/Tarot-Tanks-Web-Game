@@ -8,6 +8,7 @@ import { Button } from "./modules/common";
 
 import { assetManager } from "./asset_store";
 import { Util } from "./utils";
+import config from "./config";
 
 class Game {
   Play() {
@@ -34,7 +35,6 @@ class Game {
 
   Main() {
     // this.scene = new PlayScene();
-    console.log("testing game main");
     this.scene = new MenuScene();
     this.stage.setBounds(0, 0, FULL_WIDTH, FULL_HEIGHT);
     // this.scene.regX = WIDTH / 2;
@@ -67,7 +67,7 @@ class Game {
   }
 
   switchLevel(level){
-    this.setScene(SCENES.PLAY, Util.clamp(level,0,3))
+    this.setScene(SCENES.PLAY, Util.clamp(level, 0, config.levels.length-1))
   }
 }
 

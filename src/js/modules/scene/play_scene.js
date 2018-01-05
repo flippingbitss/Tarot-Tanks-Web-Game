@@ -20,7 +20,6 @@ import game from "../../main";
 
 export class PlayScene extends Stage {
   constructor(level) {
-    console.log("creating play scene", level);
     super();
 
     this.level = config.levels[level];
@@ -46,13 +45,15 @@ export class PlayScene extends Stage {
     this.addGround();
     this.addTanks();
 
-    this.tarotCardLabel = new Label("The Magician", 30, FONT_FAMILY, "red", 1080, 30);
+    this.tarotCardLabel = new Label("", 30, FONT_FAMILY, "red", 1080, 30);
+    this.tarotCardSubLabel = new Label("", 24, FONT_FAMILY, "lightgray", 1080, 70);
     this.centerMark = new Shape();
 
     // this.HUD.addChild(bar);
     // this.addChild(this.HUD);
     // this.addChild(this.centerMark);
-    this.addChild(this.currentTarotCard);
+    this.addChild(this.tarotCardLabel);
+    this.addChild(this.tarotCardSubLabel);
   }
 
   Update(e) {
@@ -61,7 +62,7 @@ export class PlayScene extends Stage {
     //   element.visible = this.inViewport(element.x, element.y);
     // }
 
-    //  Util.doAtInterval(this.switchCard, Math.random() * 10 + 5);
+    Util.doAtInterval(this.switchCard, e, Math.random() * 5000 + 1000);
 
     for (let player of this.players) player.Update(e);
     for (let enemy of this.enemies) enemy.Update(e);
@@ -91,10 +92,6 @@ export class PlayScene extends Stage {
     this.p1Health.Update();
     this.p2Health.Update();
 
-    // win lose triggers
-    if (!this.players.length) this.transitionTo(SCENES.END);
-    if (!this.enemies.length) this.transitionTo(SCENES.WON);
-
     this.stage.scaleX = this.camera.ZOOM;
     this.stage.scaleY = this.camera.ZOOM;
 
@@ -102,26 +99,24 @@ export class PlayScene extends Stage {
     // this.stage.y = -this.camera.y;
 
     this.stage.update();
-  }
 
-  transitionTo(scene) {
-    this.bgMusic.stop();
-    game.setScene(scene);
+    // win lose triggers
+    this.checkWinLoseConditions();
   }
 
   addTanks() {
-    const { enemyConfig, playerConfig } = this.level;
-    const { player1: p1, player2: p2 } = playerConfig;
+    const { enemyTraits, playerTraits } = this.level;
+    const { player1: p1, player2: p2 } = playerTraits;
 
     this.p1Health = new ProgressBar("P1", 1, 100, 30, false);
     this.p2Health = new ProgressBar("P2", 1, 950, 30, false);
 
-    this.players.push(
-      new Player(p1, playerConfig, this, 0, this.p1Health),
-      new Player(p2, playerConfig, this, 1, this.p2Health)
-    );
+    this.players = [
+      new Player(p1, playerTraits, this.tarotConfig, this, 0, this.p1Health),
+      new Player(p2, playerTraits, this.tarotConfig, this, 1, this.p2Health)
+    ];
 
-    this.enemies = enemyConfig.enemies.map(e => new Enemy(enemyConfig, e, this));
+    this.enemies = enemyTraits.enemies.map(e => new Enemy(enemyTraits, e, this));
     // this.HUD = new Container();
 
     this.addChild(...this.enemies);
@@ -147,7 +142,6 @@ export class PlayScene extends Stage {
     for (let i = 0; i < this.tileMap.rows; i++) {
       for (let j = 0; j < this.tileMap.cols; j++) {
         let tileType = this.tileMap.getTileType(i, j);
-        console.log(tileType);
         if (tileType == -1) continue;
         let tile = new Sprite(this.tileMap.tileSet);
         tile.gotoAndStop(tileType);
@@ -156,7 +150,7 @@ export class PlayScene extends Stage {
         this.ground.addChild(tile);
       }
     }
-    this.ground.cache(0, 0, FULL_WIDTH, FULL_HEIGHT);
+    //    this.ground.cache(0, 0, FULL_WIDTH, FULL_HEIGHT);
   }
 
   handleTankDeath(e, deadTank, tanks) {
@@ -200,16 +194,62 @@ export class PlayScene extends Stage {
   switchCard() {
     let card = this.drawTarotCard();
 
-    while (card != this.currentTarotCard) {
+    while (card == this.currentTarotCard) {
       card = this.drawTarotCard();
     }
 
     this.applyCard(card);
 
     this.tarotCardLabel.text = card.name;
+    this.tarotCardSubLabel.text = card.subtitle;
   }
 
   applyCard(card) {
     let newConfig = { ...config.tarotsConfig.default, ...card.trait };
+    this.tarotConfig = newConfig;
+    this.updateTankSpeed();
+  }
+
+  resetConfig() {
+    this.tarotConfig = { ...config.tarotsConfig.default };
+    this.updateTankSpeed();
+  }
+
+  updateTankSpeed() {
+    const { enemyTraits, playerTraits } = this.level;
+    for (let p of this.players) {
+      p.speed = Math.round(playerTraits.speed * this.tarotConfig.gameSpeed);
+    }
+    for (let e of this.enemies) {
+      e.speed = Math.round(enemyTraits.speed * this.tarotConfig.gameSpeed);
+    }
+  }
+
+  checkWinLoseConditions() {
+    if (!this.players.length) this.transitionTo(SCENES.END);
+    if (!this.enemies.length) {
+      if (this.level.id < config.levels.length - 1) {
+        game.switchLevel(this.level.id + 1);
+      } else {
+        this.transitionTo(SCENES.WON);
+      }
+    }
+  }
+
+  transitionTo(scene) {
+    this.bgMusic.stop();
+    game.setScene(scene);
+  }
+
+  removeWallAt(location) {
+    if (!location) return;
+
+    const { x, y } = location;
+    let mapIndex = y * this.tileMap.cols + x;
+    this.tileMap.grid[mapIndex] = this.tileMap.transformation["."];
+
+    let index = (y - 1) * this.tileMap.cols + x;
+    let tile = this.ground.getChildAt(index);
+    tile.gotoAndStop(this.tileMap.transformation["."]);
   }
 }

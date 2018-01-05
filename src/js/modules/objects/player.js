@@ -17,17 +17,18 @@ import config from "../../config";
 import { assetManager } from "../../asset_store";
 
 export class Player extends GameObject {
-  constructor(playerData, config, scene, playerNum, healthBar) {
+  constructor(playerData, playerTraits, tarotConfig, scene, playerNum, healthBar) {
     const { sprite, pos } = playerData;
 
     super(
       sprite,
       pos[0] * TILE_SIZE - TILE_SIZE / 2,
       pos[1] * TILE_SIZE - TILE_SIZE / 2,
-      config.speed,
+      playerTraits.speed,
       scene
     );
-
+    
+    this.tarotConfig = tarotConfig;
     this.movement = [false, false, false, false];
     this.bullets = [];
     this.playerNum = playerNum;
@@ -71,17 +72,16 @@ export class Player extends GameObject {
   }
 
   Shoot() {
-    let bullet = new Bullet("bullet", this.x, this.y, 20, this.scene, this.forward, TAGS.PLAYER);
+    let bullet = new Bullet(this.x, this.y, 20 * this.tarotConfig.gameSpeed, this.scene, this.forward, TAGS.PLAYER);
     this.stage.addChild(bullet);
     bullet.onDestroyed(this.handleBulletDestruction);
     bullet.onCollision(this.onBulletCollision);
+    bullet.onCollisionDestructible(this.OnBulletCollisionDestructible);
     this.bullets.push(bullet);
   }
 
   onBulletCollision(e, data) {
     let { bullet, hitObj: { value: obj } } = data;
-
-    console.log("hitobj", obj);
     if (obj && obj.tag == TAGS.ENEMY) {
       obj.takeDamage();
     }
@@ -114,7 +114,6 @@ export class Player extends GameObject {
   }
 
   Main() {
-    // console.log("main of player ", this.scene);
     if (this.playerNum) {
       game.input.addMapping(37, e => this.Move(e, DIR.LEFT, Vector2.Left), false);
       game.input.addMapping(38, e => this.Move(e, DIR.UP, Vector2.Down), false);

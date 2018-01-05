@@ -5,10 +5,9 @@ import game from "../../main";
 import { GameObject } from "./index";
 
 export class Bullet extends GameObject {
+  constructor(x, y, speed = 20, scene, dir, owner = TAGS.ENEMY) {
+    super("bullet", x, y, speed, scene);
 
-  constructor(animName, x, y, speed = 20, scene, dir, owner = TAGS.ENEMY) {
-    super(animName, x, y, speed, scene);
-    
     // if (isCentered) {
     //   let bounds = this.getBounds();
     //   this.regX = bounds.width * 0.5;
@@ -20,13 +19,14 @@ export class Bullet extends GameObject {
 
     this.owner = owner;
     this.forward = dir;
-  
+
     this.hitObj = { value: null };
+    this.hitWall = { value: null };
+
     this.isAlive = true;
-    this.rotation = 360 - this.forward.atan2(Vector2.Down) * 180 / Math.PI
-  
-    Sound.play("bullet_hit")
-    
+    this.rotation = 360 - this.forward.atan2(Vector2.Down) * 180 / Math.PI;
+
+    Sound.play("bullet_hit");
   }
 
   onDestroyed(callback) {
@@ -37,6 +37,10 @@ export class Bullet extends GameObject {
     this.on("collision", callback, null, true, { bullet: this, hitObj: this.hitObj });
   }
 
+  onCollisionDestructible(callback) {
+    this.on("collisionDestructible", callback, null, true, { bullet: this, hitWall: this.hitWall });
+  }
+
   inBounds() {
     return this.x >= 0 && this.x < FULL_WIDTH && this.y >= 0 && this.y < FULL_HEIGHT;
   }
@@ -45,6 +49,14 @@ export class Bullet extends GameObject {
   isColliding(pos) {
     const { x, y } = pos;
     let map = game.scene.tileMap;
+
+    let isDestructibleObject = map.isDestructibleAtXY(x, y);
+
+    if (isDestructibleObject) {
+      this.hitWall.value = { x: map.getCol(x), y: map.getRow(y) };
+      this.dispatchEvent("collisionDestructible");
+    }
+
     let isColliding = map.isSolidTileAtXY(x, y);
     let collidables = null;
 
@@ -108,7 +120,6 @@ export class Bullet extends GameObject {
     this.pos = this.pos.add(newPos);
     if (!this.inBounds() || this.isColliding(this.pos)) {
       if (this.isAlive) {
-        console.log("kill bullet");
         this.isAlive = false;
         this.dispatchEvent("destroy");
       }

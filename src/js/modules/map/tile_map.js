@@ -1,5 +1,5 @@
 import { Sprite, SpriteSheet } from "createjs-module";
-import {assetManager} from "../../asset_store";
+import { assetManager } from "../../asset_store";
 import { TILE_SIZE, ROW_COUNT, COL_COUNT } from "../../constants";
 import game from "../../main";
 
@@ -28,31 +28,26 @@ export class TileMap {
       }
     });
 
-   // let transform = { 9: -1, 0: 0.1 };
-    let transform = { "-": -1, "d": 0.1, "." : 2, "#": 1 };
+    // let transform = { 9: -1, 0: 0.1 };
+    this.transformation = { "-": -1, d: 0.1, ".": 2, "#": 1 };
 
-    this.grid = level.map.split("\n").map(e=> e.trim()).join(" ").split(" ").map(e=>transform[e])
+    this.grid = level.map.split("\n").map(e=> e.trim()).join(" ").split(" ").map(e=>this.transformation[e])
 
-   // prettier-ignore
+    // prettier-ignore
     // this.grid = [
-    //   9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9, 
-    //   1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1 ,1, 1, 1,  1,      
-    //   1, 0, 0, 0,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 0, 0, 0,  1, 
-    //   1, 0, 0, 0,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 0, 0, 0,  1, 
+    //   9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9, 9, 9, 9,  9,
+    //   1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1 ,1, 1, 1,  1,
+    //   1, 0, 0, 0,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 0, 0, 0,  1,
+    //   1, 0, 0, 0,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 0, 0, 0,  1,
     //   1, 0, 0, 0,  2, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  2, 0, 0, 0,  1,
     //   1, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  2, 2, 2, 2,  1,
     //   1, 2, 2, 2,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 2, 2, 2,  1,
     //   1, 2, 2, 1,  1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  1, 1, 2, 2,  1,
     //   1, 2, 2, 1,  1, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  1, 1, 2, 2,  1,
-    //   1, 2, 2, 2,  2, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  2, 2, 2, 2,  1, 
-    //   1, 2, 2, 2,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 2, 2, 2,  1, 
+    //   1, 2, 2, 2,  2, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  2, 2, 2, 2,  1,
+    //   1, 2, 2, 2,  2, 2, 2, 2,  0, 0, 0, 0,  0, 2, 2, 2,  2, 2, 2, 2,  1,
     //   1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1, 1, 1, 1,  1 ,1, 1, 1,  1
     // ].map(e=> e in transform ? transform[e] : e);
-
-
-    
-
-
 
     // // prettier-ignore
 
@@ -140,5 +135,14 @@ export class TileMap {
     let tile = this.getTileType(row, col);
     let isSolid = this.solidTiles.indexOf(tile) >= 0;
     return isSolid;
+  }
+
+  isDestructibleAtXY(x, y) {
+    const col = this.getCol(x);
+    const row = this.getRow(y);
+
+    let tile = this.getTileType(row, col);
+
+    return tile == this.transformation.d;
   }
 }
