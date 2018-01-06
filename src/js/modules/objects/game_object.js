@@ -4,7 +4,7 @@ import { Vector2, Util } from "../../utils";
 import { gameSpritesheet } from "../../asset_store";
 
 export class GameObject extends Sprite {
-  constructor(frameOrAnimation, x, y, speed = 5, scene) {
+  constructor(frameOrAnimation, x, y, speed = 5,health, scene) {
     super(gameSpritesheet, frameOrAnimation);
 
     this.stop();
@@ -20,7 +20,7 @@ export class GameObject extends Sprite {
     this.speed = speed;
 
     this.tileType = 100;
-    this.health = 10;
+    this.health = health;
     this.scene = scene;
   }
 

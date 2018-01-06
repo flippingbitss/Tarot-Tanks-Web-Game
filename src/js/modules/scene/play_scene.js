@@ -26,7 +26,6 @@ export class PlayScene extends Stage {
     this.level = config.levels[level];
 
     this.tarotConfig = { ...config.tarotsConfig.default };
-    this.currentTarotCard = null;
     this.tileMap = new TileMap(this, this.level);
 
     this.players = [];
@@ -50,7 +49,7 @@ export class PlayScene extends Stage {
     this.powerupContainer = new Container();
 
     this.tarotCardLabel = new Label("", 30, FONT_FAMILY, "red", 1080, 30);
-    this.tarotCardSubLabel = new Label("", 24, FONT_FAMILY, "lightgray", 1080, 70);
+    this.tarotCardSubLabel = new Label("", 24, FONT_FAMILY, "lightgray", 1000, 70);
     this.centerMark = new Shape();
 
     // this.HUD.addChild(bar);
@@ -61,6 +60,7 @@ export class PlayScene extends Stage {
     this.addChild(this.powerupContainer);
 
     this.startPowerupSpawner();
+    this.startTarotCardSpawner();
   }
 
   Update(e) {
@@ -68,8 +68,8 @@ export class PlayScene extends Stage {
     //   let element = this.ground.getChildAt(i);
     //   element.visible = this.inViewport(element.x, element.y);
     // }
-
-    Util.doAtInterval(this.switchCard, e, Math.random() * 5000 + 1000);
+    if (this.tarotConfig.reviveEnemies) Util.doAtInterval(this.reviveEnemy, e, 3000);
+    if (this.tarotConfig.enemiesRepair) Util.doAtInterval(this.repairEnemies, e, 2000);
 
     for (let player of this.players) player.Update(e);
     for (let enemy of this.enemies) enemy.Update(e);
@@ -144,27 +144,45 @@ export class PlayScene extends Stage {
     }
   }
 
-  revivePlayer(){
-    if(this.players.length >= 2 || this.players.length <= 0) return;
+  revivePlayer() {
+    if (this.players.length >= 2 || this.players.length <= 0) return;
     let alivePlayer = this.players[0];
     let player = null;
 
     const { enemyTraits, playerTraits } = this.level;
     const { player1: p1, player2: p2 } = playerTraits;
 
-    if(alivePlayer.playerNum){
-      player = new Player(p1, playerTraits, this.tarotConfig, this, 0, this.p1Health)
-    }else{
-      player = new Player(p2, playerTraits, this.tarotConfig, this, 1, this.p2Health)
+    if (alivePlayer.playerNum) {
+      player = new Player(p1, playerTraits, this.tarotConfig, this, 0, this.p1Health);
+    } else {
+      player = new Player(p2, playerTraits, this.tarotConfig, this, 1, this.p2Health);
     }
 
     let handlePlayerDeath = (e, t) => this.handleTankDeath(e, t, this.players);
-    player.onDestroy(handlePlayerDeath)
+    player.onDestroy(handlePlayerDeath);
 
-    this.players.push(player)
-    this.addChild(player)
+    this.players.push(player);
+    this.addChild(player);
   }
 
+  reviveEnemy() {
+    const { enemyTraits } = this.level;
+
+    let deadEnemies = enemyTraits.enemies.filter(e =>
+      this.enemies.some(x => x.waypoints != e.waypoints)
+    );
+    let randIdx = Math.floor(Math.random() * deadEnemies.length);
+
+    let enemy = new Enemy(enemyTraits, deadEnemies[randIdx], this);
+
+    let handleEnemyDeath = (e, t) => this.handleTankDeath(e, t, this.enemies);
+    this.enemies.push(enemy);
+    this.addChild(enemy);
+  }
+
+  repairEnemies() {
+    for (let e of this.enemies) e.repair();
+  }
 
   addGround() {
     this.ground = new Container();
@@ -219,12 +237,16 @@ export class PlayScene extends Stage {
     return result;
   }
 
-  switchCard() {
-    let card = null;
-    do {
-      card = this.rouletteSelect(config.tarotsConfig.cards);
-    } while (card == this.currentTarotCard);
+  startTarotCardSpawner() {
+    let timer = () => {
+      this.switchCard();
+      setTimeout(timer, Math.random() * 10000 + 15000);
+    };
+    setTimeout(timer, Math.random() * 10000 + 15000);
+  }
 
+  switchCard() {
+    let card = this.rouletteSelect(config.tarotsConfig.cards);
     this.applyCard(card);
 
     this.tarotCardLabel.text = card.name;
@@ -233,23 +255,19 @@ export class PlayScene extends Stage {
 
   applyCard(card) {
     let newConfig = { ...config.tarotsConfig.default, ...card.trait };
+    console.log(this.tarotConfig, newConfig);
     this.tarotConfig = newConfig;
-    this.updateTankSpeed();
+
+    for (let p of this.players) p.tarotConfig = this.tarotConfig;
+
+    setTimeout(this.resetConfig, card.aliveTime * 1000);
   }
 
   resetConfig() {
     this.tarotConfig = { ...config.tarotsConfig.default };
-    this.updateTankSpeed();
-  }
-
-  updateTankSpeed() {
-    const { enemyTraits, playerTraits } = this.level;
-    for (let p of this.players) {
-      p.speed = Math.round(playerTraits.speed * this.tarotConfig.gameSpeed);
-    }
-    for (let e of this.enemies) {
-      e.speed = Math.round(enemyTraits.speed * this.tarotConfig.gameSpeed);
-    }
+    for (let p of this.players) p.tarotConfig = this.tarotConfig;
+    this.tarotCardLabel.text = "";
+    this.tarotCardSubLabel.text = "";
   }
 
   checkWinLoseConditions() {
@@ -281,14 +299,6 @@ export class PlayScene extends Stage {
     tile.gotoAndStop(this.tileMap.transformation["."]);
   }
 
-  startEnemySpawner() {
-    let timer = () => {
-      this.spawnEnemy();
-      setTimeout(timer, this.tarotConfig.enemySpawnRate * 1000);
-    };
-    setTimeout(timer, this.tarotConfig.enemySpawnRate * 1000);
-  }
-
   startPowerupSpawner() {
     let timer = () => {
       this.spawnPowerup();
@@ -304,7 +314,7 @@ export class PlayScene extends Stage {
     let powerupConfig = this.rouletteSelect(config.powerupConfig.powerups);
 
     let powerup = new Powerup(powerupConfig, x, y, this);
-   // console.log(powerup.traits.name, powerup.pos.x, powerup.pos.y);
+    // console.log(powerup.traits.name, powerup.pos.x, powerup.pos.y);
     this.powerups.push(powerup);
     this.powerupContainer.addChild(powerup);
 
@@ -315,7 +325,7 @@ export class PlayScene extends Stage {
     if (this.powerups.length) {
       this.powerupContainer.removeChild(powerup);
       this.powerups.splice(this.powerups.indexOf(powerup), 1);
-    //  console.log("removing", powerup.traits.name, powerup.pos.x, powerup.pos.y);
+      //  console.log("removing", powerup.traits.name, powerup.pos.x, powerup.pos.y);
     }
   }
 
@@ -325,7 +335,4 @@ export class PlayScene extends Stage {
       this.removePowerup(p);
     }
   }
-
-
-  
 }

@@ -27,7 +27,7 @@ export default {
       enemyTraits: {
         speed: 8,
         health: 10,
-        followRange: 400,
+        followRange: 300,
         pathfinding: false,
         sprite: "enemyGreen",
         enemies: [
@@ -81,7 +81,7 @@ export default {
       },
       enemyTraits: {
         speed: 8,
-        health: 10,
+        health: 15,
         followRange: 400,
         pathfinding: false,
         sprite: "enemyGreen",
@@ -132,7 +132,7 @@ export default {
       },
       enemyTraits: {
         speed: 8,
-        health: 10,
+        health: 20,
         followRange: 400,
         pathfinding: false,
         sprite: "enemyGreen",
@@ -180,9 +180,10 @@ export default {
 
   tarotsConfig: {
     default: {
-      enemySpawnRate: 5,
+      reviveEnemies: false,
+      enemiesRepair: false,
       powerupSpawnRate: 5,
-      gameSpeed: 1
+      bulletSpeedMultiplier: 1
     },
 
     /*
@@ -197,36 +198,39 @@ export default {
     cards: [
       {
         name: "The Sun",
-        subtitle: "Faster Enemy Spawn",
-        fitnessScore: 40,
+        subtitle: "Revive Dead Enemies",
+        fitnessScore: 5,
         trait: {
-          enemySpawnRate: 10
-        }
+          reviveEnemies: true
+        },
+        aliveTime: 5
       },
       {
         name: "The Devil",
-
-        subtitle: "Spawn Dummy Tanks",
+        subtitle: "Enemies Repair themselves",
         fitnessScore: 10,
         trait: {
-          spawnDummyTanks: true
-        }
+          enemiesRepair: true
+        },
+        aliveTime: 10
       },
       {
         name: "The Magician",
         subtitle: "Faster Powerup Spawn",
         fitnessScore: 20,
         trait: {
-          powerupSpawnRate: 10
-        }
+          powerupSpawnRate: 20
+        },
+        aliveTime: 10
       },
       {
         name: "The Chariot",
-        subtitle: "Faster Gameplay",
-        fitnessScore: 30,
+        subtitle: "Faster Player Bullets",
+        fitnessScore: 40,
         trait: {
-          gameSpeed: 1
-        }
+          bulletSpeedMultiplier: 2
+        },
+        aliveTime: 15
       }
     ]
   },

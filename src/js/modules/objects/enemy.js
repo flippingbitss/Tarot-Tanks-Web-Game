@@ -20,6 +20,7 @@ export class Enemy extends GameObject {
       x * TILE_SIZE + TILE_SIZE / 2,
       y * TILE_SIZE + TILE_SIZE / 2,
       enemyTraits.speed,
+      enemyTraits.health,
       scene
     );
 
@@ -35,59 +36,24 @@ export class Enemy extends GameObject {
     this.waypoints = enemyData.waypoints || [];
     this.bullets = [];
 
-    this.playerMark = new Shape();
-    this.enemyMark = new Shape();
-
     this.Main();
   }
 
   Main() {
     this.currentWaypoint = 0;
-    // this.interval = setInterval(this.shoot, 2000);
-
-    // this.waypoints.forEach(([x, y]) => {
-    //   let tile = new Sprite(this.scene.tileMap.tileSet);
-    //   tile.gotoAndStop(1);
-    //   tile.x = x * TILE_SIZE;
-    //   tile.y = y * TILE_SIZE;
-
-    //   this.scene.addChild(tile);
-    // });
-
-    this.playerMark.graphics.beginStroke("blue").drawRect(this.x, this.y, TILE_SIZE, TILE_SIZE);
-    this.scene.addChild(this.playerMark, this.enemyMark);
   }
 
   Update(tick) {
     this.stop();
     let closestPlayer = this.getClosestInRange(this.scene.players, this.traits.followRange);
     if (closestPlayer) {
-      // this._continueShoot();
       this.doAtInterval(this.shoot, tick, 1000);
 
       let { x, y } = closestPlayer.pos;
       let { row, col } = this.scene.tileMap.getTileCoordRound(x - TILE_SIZE / 2, y - TILE_SIZE / 2);
 
-      // this.playerMark.graphics.clear();
-      // this.playerMark.graphics
-      //   .beginStroke("blue")
-      //   .drawRect(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-
       this.followTarget(new Vector2(col, row));
     } else {
-      // clearInterval(this.interval);
-
-      let { row, col } = this.scene.tileMap.getTileCoordRound(
-        this.pos.x - TILE_SIZE / 2,
-        this.pos.y - TILE_SIZE / 2
-      );
-      // this.scene.tileMap.updateTile(row,col,this.tileType)
-
-      this.enemyMark.graphics.clear();
-      this.enemyMark.graphics
-        .beginStroke("red")
-        .drawRect(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-
       this.patrol();
     }
     this.Move(tick);
@@ -97,6 +63,9 @@ export class Enemy extends GameObject {
     }
     this.stage.update();
   }
+
+  
+
   /**
    * @param {Vector2} pos
    * @memberof Enemy
@@ -123,7 +92,7 @@ export class Enemy extends GameObject {
   }
 
   shoot() {
-    let bullet = new Bullet(this.x, this.y, 20, this.scene, this.forward, TAGS.ENEMY);
+    let bullet = new Bullet(this.x, this.y, 30, this.scene, this.forward, TAGS.ENEMY);
 
     bullet.onCollision(this.onBulletCollision);
     bullet.onCollisionDestructible(this.OnBulletCollisionDestructible);
@@ -180,18 +149,29 @@ export class Enemy extends GameObject {
 
   takeDamage() {
     this.health = Math.max(0, --this.health);
-    const startHealth = this.traits.health;
-
-    if (this.health <= startHealth * 1 / 3) {
-      this.gotoAndPlay("enemyRed");
-    } else if (this.health > startHealth * 1 / 3 && this.health <= startHealth * 2 / 3) {
-      this.gotoAndPlay("enemyYellow");
-    } else if (this.health > startHealth * 2 / 3) {
-      this.gotoAndPlay("enemyGreen");
-    }
-
+    this.updateSkin();
     if (this.health <= 0) {
       this.dispatchEvent("enemyDead");
     }
   }
+
+  repair(){
+    this.health = Math.min(this.traits.health, ++this.health);
+    this.updateSkin();
+  }
+
+  updateSkin() {
+    const startHealth = this.traits.health;
+    if (this.health <= startHealth * 1 / 3) {
+      this.gotoAndPlay("enemyRed");
+    }
+    else if (this.health > startHealth * 1 / 3 && this.health <= startHealth * 2 / 3) {
+      this.gotoAndPlay("enemyYellow");
+    }
+    else if (this.health > startHealth * 2 / 3) {
+      this.gotoAndPlay("enemyGreen");
+    }
+  }
+
+ 
 }

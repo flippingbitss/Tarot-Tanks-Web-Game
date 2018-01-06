@@ -25,10 +25,12 @@ export class Player extends GameObject {
       pos[0] * TILE_SIZE - TILE_SIZE / 2,
       pos[1] * TILE_SIZE - TILE_SIZE / 2,
       playerTraits.speed,
+      playerTraits.health,
       scene
     );
 
     this.tarotConfig = tarotConfig;
+    this.playerTraits = playerTraits;
     this.movement = [false, false, false, false];
     this.bullets = [];
     this.playerNum = playerNum;
@@ -83,11 +85,13 @@ export class Player extends GameObject {
     let bullet = new Bullet(
       this.x,
       this.y,
-      20 * this.tarotConfig.gameSpeed,
+      20 * this.tarotConfig.bulletSpeedMultiplier,
       this.scene,
       this.forward,
       TAGS.PLAYER
     );
+
+    console.log(this.tarotConfig.bulletSpeedMultiplier);
     this.stage.addChild(bullet);
     bullet.onDestroyed(this.handleBulletDestruction);
     bullet.onCollision(this.onBulletCollision);
@@ -130,7 +134,7 @@ export class Player extends GameObject {
   }
 
   repair(){
-    this.health = Math.max(0, ++this.health);
+    this.health = Math.min(this.playerTraits.health, ++this.health);
     this.healthBar.progress = this.health / 10;
   }
 
