@@ -2,7 +2,7 @@ import { GameObject } from "./index";
 
 export class Powerup extends GameObject {
   constructor(config, x, y, scene) {
-    super(config.sprite, x, y, 0, scene);
+    super(config.sprite, x, y, 0, 0, scene);
     this.regX = 0;
     this.regY = 0;
     this.traits = config;

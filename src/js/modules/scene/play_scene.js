@@ -176,6 +176,7 @@ export class PlayScene extends Stage {
     let enemy = new Enemy(enemyTraits, deadEnemies[randIdx], this);
 
     let handleEnemyDeath = (e, t) => this.handleTankDeath(e, t, this.enemies);
+    enemy.onDestroy(handleEnemyDeath)
     this.enemies.push(enemy);
     this.addChild(enemy);
   }
@@ -240,9 +241,9 @@ export class PlayScene extends Stage {
   startTarotCardSpawner() {
     let timer = () => {
       this.switchCard();
-      setTimeout(timer, Math.random() * 10000 + 15000);
+      setTimeout(timer, Math.random() * 10000 + 12000);
     };
-    setTimeout(timer, Math.random() * 10000 + 15000);
+    setTimeout(timer, Math.random() * 10000 + 12000);
   }
 
   switchCard() {

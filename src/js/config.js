@@ -230,7 +230,7 @@ export default {
         trait: {
           bulletSpeedMultiplier: 2
         },
-        aliveTime: 15
+        aliveTime: 10
       }
     ]
   },
