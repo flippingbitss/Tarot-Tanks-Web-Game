@@ -60,8 +60,7 @@ export class MenuScene extends Stage {
 
      
     instructionsButton.on("click",e=>{
-      alert("not implemented yet")
-      // TODO implement sound
+      game.setScene(SCENES.INSTRUCTIONS);
     })
 
    

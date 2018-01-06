@@ -117,6 +117,7 @@ export const SPRITES_SPEC = {
 export const SCENES = Object.freeze({
   START: Symbol("start"),
   PLAY: Symbol("play"),
+  INSTRUCTIONS: Symbol("instructions"),
   WON: Symbol("won"),
   END: Symbol("end")
 });

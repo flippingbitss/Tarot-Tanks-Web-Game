@@ -116,7 +116,7 @@ export class PlayScene extends Stage {
     const { enemyTraits, playerTraits } = this.level;
     const { player1: p1, player2: p2 } = playerTraits;
 
-    this.p1Health = new ProgressBar("P1", 1, 100, 30, false);
+    this.p1Health = new ProgressBar("P1", 1, 50, 30, false);
     this.p2Health = new ProgressBar("P2", 1, 950, 30, false);
 
     this.players = [
@@ -169,7 +169,7 @@ export class PlayScene extends Stage {
     const { enemyTraits } = this.level;
 
     let deadEnemies = enemyTraits.enemies.filter(e =>
-      this.enemies.some(x => x.waypoints != e.waypoints)
+      this.enemies.every(x => x.waypoints != e.waypoints)
     );
     let randIdx = Math.floor(Math.random() * deadEnemies.length);
 

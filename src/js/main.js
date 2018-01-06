@@ -3,7 +3,7 @@ import { Stage, Sound, Text, Ticker, Bitmap } from "createjs-module";
 import { SCENES, WIDTH, HEIGHT, FULL_HEIGHT, FULL_WIDTH } from "./constants";
 
 import { Keyboard } from "./modules/input";
-import { PlayScene, MenuScene, EndScene , WonScene} from "./modules/scene";
+import { PlayScene, MenuScene, EndScene, WonScene, InstructionsScene } from "./modules/scene";
 import { Button } from "./modules/common";
 
 import { assetManager } from "./asset_store";
@@ -54,6 +54,9 @@ class Game {
       case SCENES.WON:
         this.scene = new WonScene();
         break;
+      case SCENES.INSTRUCTIONS:
+        this.scene = new InstructionsScene();
+        break;
       case SCENES.END:
         this.scene = new EndScene();
         break;
@@ -66,8 +69,8 @@ class Game {
     this.stage.addChild(this.scene);
   }
 
-  switchLevel(level){
-    this.setScene(SCENES.PLAY, Util.clamp(level, 0, config.levels.length-1))
+  switchLevel(level) {
+    this.setScene(SCENES.PLAY, Util.clamp(level, 0, config.levels.length - 1));
   }
 }
 
