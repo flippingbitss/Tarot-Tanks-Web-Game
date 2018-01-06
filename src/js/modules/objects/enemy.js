@@ -183,11 +183,11 @@ export class Enemy extends GameObject {
     const startHealth = this.traits.health;
 
     if (this.health <= startHealth * 1 / 3) {
-      this.gotoAndPlay("enemyGreen");
+      this.gotoAndPlay("enemyRed");
     } else if (this.health > startHealth * 1 / 3 && this.health <= startHealth * 2 / 3) {
       this.gotoAndPlay("enemyYellow");
     } else if (this.health > startHealth * 2 / 3) {
-      this.gotoAndPlay("enemyRed");
+      this.gotoAndPlay("enemyGreen");
     }
 
     if (this.health <= 0) {

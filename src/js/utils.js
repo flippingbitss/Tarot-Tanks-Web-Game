@@ -1,3 +1,5 @@
+import { setTimeout } from "timers";
+
 /**
  * @export
  * @author Manpreet Singh Matharu
@@ -10,7 +12,7 @@ export class Vector2 {
     this.y = y;
   }
 
-  /** 
+  /**
    * @readonly
    * @static
    * @memberof Vector2
@@ -38,17 +40,17 @@ export class Vector2 {
 
   /**
    * @static
-   * @param {Vector2} v1 
-   * @param {Vector2} v2 
+   * @param {Vector2} v1
+   * @param {Vector2} v2
    * @returns {Number} distance
    * @memberof Vector2
    */
-  static dist(v1,v2){
-    return v1.subtract(v2).magnitude
+  static dist(v1, v2) {
+    return v1.subtract(v2).magnitude;
   }
 
-  /** 
-   * @param {Vector2} vec 
+  /**
+   * @param {Vector2} vec
    * @returns {Vector2}
    * @memberof Vector2
    */
@@ -56,8 +58,8 @@ export class Vector2 {
     return new Vector2(this.x + vec.x, this.y + vec.y);
   }
 
-  /** 
-   * @param {Vector2} vec 
+  /**
+   * @param {Vector2} vec
    * @returns {Vector2}
    * @memberof Vector2
    */
@@ -65,8 +67,8 @@ export class Vector2 {
     return new Vector2(this.x - vec.x, this.y - vec.y);
   }
 
-  /** 
-   * @param {Number} number 
+  /**
+   * @param {Number} number
    * @returns {Vector2}
    * @memberof Vector2
    */
@@ -75,7 +77,7 @@ export class Vector2 {
   }
 
   /**
-   * @param {Vector2} vec 
+   * @param {Vector2} vec
    * @returns {boolean}
    * @memberof Vector2
    */
@@ -83,8 +85,8 @@ export class Vector2 {
     return this.x == vec.x && this.y == vec.y;
   }
 
-  /** 
-   * @param {Vector2} vec 
+  /**
+   * @param {Vector2} vec
    * @returns {Number}
    * @memberof Vector2
    */
@@ -92,7 +94,7 @@ export class Vector2 {
     return this.x * vec.x + this.y * vec.y;
   }
 
-  /** 
+  /**
    * @returns {Vector2}
    * @memberof Vector2
    */
@@ -139,7 +141,7 @@ export class Vector2 {
   }
 
   /**
-   * @param {Vector2} vec 
+   * @param {Vector2} vec
    * @returns {Number}
    * @memberof Vector2
    */
@@ -156,9 +158,9 @@ export class Vector2 {
  */
 export class Util {
   /**
-   * @param {Number} value 
-   * @param {Number} min 
-   * @param {Number} max 
+   * @param {Number} value
+   * @param {Number} min
+   * @param {Number} max
    * @returns {Number}
    * @memberof Util
    */
@@ -167,7 +169,7 @@ export class Util {
   }
 
   /**
-   * @param {Number} value 
+   * @param {Number} value
    * @param {Number} start
    * @param {Number} end
    * @param {Number} resultStart
@@ -185,11 +187,14 @@ export class Util {
     this.time = this.time || tick.time;
 
     let newTime = tick.time;
-   
+
     if (newTime - this.time > rate) {
       callback();
       this.time = newTime;
     }
   }
 
+  static wait(milliseconds) {
+    return new Promise((res, rej) => setTimeout(res, milliseconds));
+  }
 }

@@ -14,7 +14,7 @@ import {
 import { ProgressBar, Label } from "../common";
 import { Player, Enemy } from "../objects";
 import { Camera, TileMap } from "../map";
-import assetManager from "../../asset_store";
+import assetManager, { gameSpritesheet } from "../../asset_store";
 import config from "../../config";
 import game from "../../main";
 
@@ -30,6 +30,7 @@ export class PlayScene extends Stage {
 
     this.players = [];
     this.enemies = [];
+    this.powerups = [];
 
     // this.stage.scaleX = 0.5;
     // this.stage.scaleY = 0.5;
@@ -45,6 +46,8 @@ export class PlayScene extends Stage {
     this.addGround();
     this.addTanks();
 
+    this.powerupContainer = new Container();
+
     this.tarotCardLabel = new Label("", 30, FONT_FAMILY, "red", 1080, 30);
     this.tarotCardSubLabel = new Label("", 24, FONT_FAMILY, "lightgray", 1080, 70);
     this.centerMark = new Shape();
@@ -54,6 +57,9 @@ export class PlayScene extends Stage {
     // this.addChild(this.centerMark);
     this.addChild(this.tarotCardLabel);
     this.addChild(this.tarotCardSubLabel);
+    this.addChild(this.powerupContainer);
+
+    this.startPowerupSpawner();
   }
 
   Update(e) {
@@ -170,33 +176,30 @@ export class PlayScene extends Stage {
     );
   }
 
-  drawTarotCard() {
-    let allCards = config.tarotsConfig.cards;
-
-    let fitnessSum = allCards.reduce((a, b) => a + b.pickupScore, 0);
+  rouletteSelect(array) {
+    let fitnessSum = array.reduce((a, b) => a + b.fitnessScore, 0);
 
     let randomWeight = Math.random() * fitnessSum;
     let cumulative = 0;
 
     // roulette wheel selection for handling the probability distribution
-    let resultCard = allCards[0];
-    for (let card of allCards) {
-      cumulative += card.pickupScore;
+    let result = array[0];
+    for (let r of array) {
+      cumulative += r.fitnessScore;
       if (cumulative >= randomWeight) {
-        resultCard = card;
+        result = r;
         break;
       }
     }
 
-    return resultCard;
+    return result;
   }
 
   switchCard() {
-    let card = this.drawTarotCard();
-
-    while (card == this.currentTarotCard) {
-      card = this.drawTarotCard();
-    }
+    let card = null;
+    do {
+      card = this.rouletteSelect(config.tarotsConfig.cards);
+    } while (card == this.currentTarotCard);
 
     this.applyCard(card);
 
@@ -229,6 +232,7 @@ export class PlayScene extends Stage {
     if (!this.players.length) this.transitionTo(SCENES.END);
     if (!this.enemies.length) {
       if (this.level.id < config.levels.length - 1) {
+        this.bgMusic.stop();
         game.switchLevel(this.level.id + 1);
       } else {
         this.transitionTo(SCENES.WON);
@@ -251,5 +255,25 @@ export class PlayScene extends Stage {
     let index = (y - 1) * this.tileMap.cols + x;
     let tile = this.ground.getChildAt(index);
     tile.gotoAndStop(this.tileMap.transformation["."]);
+  }
+
+  startPowerupSpawner() {
+    let timer = () => {
+      this.spawnPowerup();
+      setTimeout(timer, this.tarotConfig.powerupSpawnRate * 1000);
+    };
+    setTimeout(timer, this.tarotConfig.powerupSpawnRate * 1000);
+  }
+
+  spawnPowerup() {
+    let powerup = this.rouletteSelect(config.powerupConfig.powerups);
+
+    let tile = new Sprite(gameSpritesheet, powerup.sprite);
+
+    let { x, y } = this.tileMap.getEmptyLocation();
+    tile.x = x;
+    tile.y = y;
+    this.powerupContainer.addChild(tile);
+    console.log("spawning", powerup.name, x,y);
   }
 }

@@ -18,7 +18,9 @@ export const MANIFEST = [
 
   { id: "bullet_hit", src: "./assets/audio/bullet_hit.mp3" },
   { id: "start_screen", src: "./assets/audio/start_screen.mp3" },
-  { id: "main_1", src: "./assets/audio/main_1.mp3" }
+  { id: "main_1", src: "./assets/audio/main_1.mp3" },
+  { id: "main_2", src: "./assets/audio/main_2.mp3" },
+  { id: "main_3", src: "./assets/audio/main_3.mp3" },
   // {id: "thunder", src:"./Assets/audio/thunder.ogg"},
   // {id: "yay", src:"./Assets/audio/yay.ogg"}
 ];
@@ -69,7 +71,21 @@ export const SPRITES_SPEC = {
     [640, 480, 120, 120],
 
     // bullet
-    [0, 0, 40, 120]
+    [0, 0, 40, 120],
+
+    // powerups
+    
+    // shield
+    [40,0, 110, 120],
+
+    // wrench
+    [160,120, 120, 120],
+
+    // revive
+    [270,120, 120, 120],
+
+
+
   ],
 
   animations: {
@@ -79,7 +95,10 @@ export const SPRITES_SPEC = {
     enemyRed: { frames: [18, 19, 20], speed },
     enemyYellow: { frames: [21, 22, 23], speed },
     enemyGreen: { frames: [24, 25, 26], speed },
-    bullet: [27]
+    bullet: [27],
+    shield: [28],
+    wrench: [29],
+    revive: [30]
   }
 
   // {

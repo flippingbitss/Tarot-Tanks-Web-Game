@@ -28,7 +28,7 @@ export default {
         health: 10,
         followRange: 400,
         pathfinding: false,
-        sprite: "enemyRed",
+        sprite: "enemyGreen",
         enemies: [
           {
             pos: [6, 5],
@@ -69,7 +69,7 @@ export default {
 			# . . . . . # . . . . . . . # . . . . . #
 			# # # # # # # # # # # # # # # # # # # # #`,
       soundConfig: {
-        bgMusic: "main_1"
+        bgMusic: "main_2"
       },
       playerTraits: {
         speed: 8,
@@ -82,7 +82,7 @@ export default {
         health: 10,
         followRange: 400,
         pathfinding: false,
-        sprite: "enemyRed",
+        sprite: "enemyGreen",
         enemies: [
           {
             pos: [6, 5],
@@ -119,7 +119,7 @@ export default {
 			# . . . . . # . . . . . . . # . . . . . #
 			# # # # # # # # # # # # # # # # # # # # #`,
       soundConfig: {
-        bgMusic: "main_1"
+        bgMusic: "main_3"
       },
       playerTraits: {
         speed: 8,
@@ -132,7 +132,7 @@ export default {
         health: 10,
         followRange: 400,
         pathfinding: false,
-        sprite: "enemyRed",
+        sprite: "enemyGreen",
         enemies: [
           {
             pos: [1, 2],
@@ -195,7 +195,7 @@ export default {
       {
         name: "The Sun",
         subtitle: "Faster Enemy Spawn",
-        pickupScore: 40,
+        fitnessScore: 40,
         trait: {
           enemySpawnRate: 10
         }
@@ -204,7 +204,7 @@ export default {
         name: "The Devil",
 
         subtitle: "Spawn Dummy Tanks",
-        pickupScore: 10,
+        fitnessScore: 10,
         trait: {
           spawnDummyTanks: true
         }
@@ -212,7 +212,7 @@ export default {
       {
         name: "The Magician",
         subtitle: "Faster Powerup Spawn",
-        pickupScore: 20,
+        fitnessScore: 20,
         trait: {
           powerupSpawnRate: 10
         }
@@ -220,10 +220,34 @@ export default {
       {
         name: "The Chariot",
         subtitle: "Faster Gameplay",
-        pickupScore: 30,
+        fitnessScore: 30,
         trait: {
           gameSpeed: 1
         }
+      }
+    ]
+  }
+  ,
+  powerupConfig: {
+    powerups:[
+      {
+        name: "Revive",
+        sprite: "revive",
+        fitnessScore: 50,
+        aliveTime: 5,
+      },
+      {
+        name: "Repair",
+        sprite: "wrench",        
+        fitnessScore: 60,
+        aliveTime: 15,
+        
+      },
+      {
+        name: "Invulnerability",
+        sprite: "shield",
+        fitnessScore: 30,
+        aliveTime: 10,
       }
     ]
   }
