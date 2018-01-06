@@ -13,7 +13,8 @@ export default {
 			# . . # # d d d d d d d d d d d # # . . #
 			# . . . . d d d d d d d d d d d . . . . #
 			# . . . . . . . d d d d d . . . . . . . #
-			# # # # # # # # # # # # # # # # # # # # #`,
+      # # # # # # # # # # # # # # # # # # # # #`,
+      maxPowerupCount: 3,
       soundConfig: {
         bgMusic: "main_1"
       },
@@ -68,6 +69,7 @@ export default {
 			# . . . . . d d d . . . d d d . . . . . #
 			# . . . . . # . . . . . . . # . . . . . #
 			# # # # # # # # # # # # # # # # # # # # #`,
+      maxPowerupCount: 4,
       soundConfig: {
         bgMusic: "main_2"
       },
@@ -118,6 +120,7 @@ export default {
 			# . d d d d # # # . . . # # # d d d d . #
 			# . . . . . # . . . . . . . # . . . . . #
 			# # # # # # # # # # # # # # # # # # # # #`,
+      maxPowerupCount: 5,
       soundConfig: {
         bgMusic: "main_3"
       },
@@ -226,28 +229,27 @@ export default {
         }
       }
     ]
-  }
-  ,
+  },
   powerupConfig: {
-    powerups:[
+    powerups: [
       {
         name: "Revive",
         sprite: "revive",
         fitnessScore: 50,
-        aliveTime: 5,
+        pickupTime: 5
       },
       {
         name: "Repair",
-        sprite: "wrench",        
+        sprite: "wrench",
         fitnessScore: 60,
-        aliveTime: 15,
-        
+        pickupTime: 15,
       },
       {
         name: "Invulnerability",
         sprite: "shield",
         fitnessScore: 30,
-        aliveTime: 10,
+        pickupTime: 10,
+        usageTime: 5
       }
     ]
   }

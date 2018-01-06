@@ -17,6 +17,7 @@ import { Camera, TileMap } from "../map";
 import assetManager, { gameSpritesheet } from "../../asset_store";
 import config from "../../config";
 import game from "../../main";
+import { Powerup } from "../objects/powerup";
 
 export class PlayScene extends Stage {
   constructor(level) {
@@ -108,6 +109,7 @@ export class PlayScene extends Stage {
 
     // win lose triggers
     this.checkWinLoseConditions();
+    this.clearUsedPowerups();
   }
 
   addTanks() {
@@ -141,6 +143,28 @@ export class PlayScene extends Stage {
       e.onDestroy(handleEnemyDeath);
     }
   }
+
+  revivePlayer(){
+    if(this.players.length >= 2 || this.players.length <= 0) return;
+    let alivePlayer = this.players[0];
+    let player = null;
+
+    const { enemyTraits, playerTraits } = this.level;
+    const { player1: p1, player2: p2 } = playerTraits;
+
+    if(alivePlayer.playerNum){
+      player = new Player(p1, playerTraits, this.tarotConfig, this, 0, this.p1Health)
+    }else{
+      player = new Player(p2, playerTraits, this.tarotConfig, this, 1, this.p2Health)
+    }
+
+    let handlePlayerDeath = (e, t) => this.handleTankDeath(e, t, this.players);
+    player.onDestroy(handlePlayerDeath)
+
+    this.players.push(player)
+    this.addChild(player)
+  }
+
 
   addGround() {
     this.ground = new Container();
@@ -257,6 +281,14 @@ export class PlayScene extends Stage {
     tile.gotoAndStop(this.tileMap.transformation["."]);
   }
 
+  startEnemySpawner() {
+    let timer = () => {
+      this.spawnEnemy();
+      setTimeout(timer, this.tarotConfig.enemySpawnRate * 1000);
+    };
+    setTimeout(timer, this.tarotConfig.enemySpawnRate * 1000);
+  }
+
   startPowerupSpawner() {
     let timer = () => {
       this.spawnPowerup();
@@ -266,14 +298,34 @@ export class PlayScene extends Stage {
   }
 
   spawnPowerup() {
-    let powerup = this.rouletteSelect(config.powerupConfig.powerups);
-
-    let tile = new Sprite(gameSpritesheet, powerup.sprite);
+    if (this.powerups.length >= this.level.maxPowerupCount) return;
 
     let { x, y } = this.tileMap.getEmptyLocation();
-    tile.x = x;
-    tile.y = y;
-    this.powerupContainer.addChild(tile);
-    console.log("spawning", powerup.name, x,y);
+    let powerupConfig = this.rouletteSelect(config.powerupConfig.powerups);
+
+    let powerup = new Powerup(powerupConfig, x, y, this);
+   // console.log(powerup.traits.name, powerup.pos.x, powerup.pos.y);
+    this.powerups.push(powerup);
+    this.powerupContainer.addChild(powerup);
+
+    setTimeout(() => (powerup.isUsed = true), powerupConfig.pickupTime * 1000);
   }
+
+  removePowerup(powerup) {
+    if (this.powerups.length) {
+      this.powerupContainer.removeChild(powerup);
+      this.powerups.splice(this.powerups.indexOf(powerup), 1);
+    //  console.log("removing", powerup.traits.name, powerup.pos.x, powerup.pos.y);
+    }
+  }
+
+  clearUsedPowerups() {
+    let usedPowerups = this.powerups.filter(p => p.isUsed);
+    for (let p of usedPowerups) {
+      this.removePowerup(p);
+    }
+  }
+
+
+  
 }

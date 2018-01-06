@@ -29,12 +29,26 @@ export class MenuScene extends Stage {
 
 
     // title
-    this.gameTitle = new Label("Tarot Tanks", 50, FONT_FAMILY, this.colors[0], WIDTH/2, HEIGHT / 5 ,true);
+    this.gameTitle = new Label("Tarot Tanks", 50, FONT_FAMILY, this.colors[0], WIDTH/2 , HEIGHT / 5 ,true);
+    this.gameTitle.regX = 275;
+    this.gameTitle.regY = 30;
 
     // buttons
-    let startButton = new LabelButton("Start",30, FONT_FAMILY, "yellow", WIDTH / 2, HEIGHT / 2, true);
+    let startButton = new LabelButton("Start",30, FONT_FAMILY, "yellow", WIDTH / 2 , HEIGHT / 2, true);
+    startButton.regX = 75;
+    startButton.regY = 18;
+    startButton.setBounds(WIDTH / 2, HEIGHT / 2, startButton.regX * 2, startButton.regY * 2)
+
     let instructionsButton = new LabelButton("Instructions",30, FONT_FAMILY, "yellow", WIDTH / 2, HEIGHT / 1.6, true);
+    instructionsButton.regX = 180;
+    instructionsButton.regY = 18;
+    instructionsButton.setBounds(WIDTH / 2, HEIGHT / 2, instructionsButton.regX * 2, instructionsButton.regY * 2)
+
     let soundButton = new LabelButton("Sound ON",30, FONT_FAMILY, "yellow", WIDTH / 2, HEIGHT / 1.3, true);
+    soundButton.regX = 120;
+    soundButton.regY = 30;
+    soundButton.setBounds(WIDTH / 2, HEIGHT / 2, soundButton.regX * 2, soundButton.regY * 2)
+
     
 
 
@@ -53,8 +67,7 @@ export class MenuScene extends Stage {
    
     soundButton.on("click",e=>{
       soundButton.text = soundButton.text == "Sound ON" ? "Sound OFF" : "Sound ON";
-      alert("not implemented yet")
-      // TODO implement sound
+      Sound.setMute(!Sound.muted)
     })
     
     // this.stage.addChild(startButton);

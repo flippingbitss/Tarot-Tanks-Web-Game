@@ -74,6 +74,33 @@ export class GameObject extends Sprite {
     return isColliding;
   }
 
+  isCollidingWith(targetGameObject) {
+    const { x, y } = this.pos;
+    const { x: targetX, y: targetY } = targetGameObject.pos;
+    let targetTile = {
+      col: targetX / TILE_SIZE,
+      row: targetY / TILE_SIZE
+    }
+
+    let map = this.scene.tileMap;
+    let skinWidth = 30;
+    let myWidth = this.getBounds().width - skinWidth;
+    let myHeight = this.getBounds().height - skinWidth;
+
+    let left = x - myWidth / 2;
+    let right = x + myWidth / 2;
+    let top = y - myHeight / 2;
+    let bottom = y + myHeight / 2;
+
+    let isColliding =
+      map.isPointInTile(left, top, targetTile) ||
+      map.isPointInTile(right, top, targetTile) ||
+      map.isPointInTile(right, bottom, targetTile) ||
+      map.isPointInTile(left, bottom, targetTile);
+
+    return isColliding;
+  }
+
   /**
    * @param {GameObject} obj
    * @memberof GameObject

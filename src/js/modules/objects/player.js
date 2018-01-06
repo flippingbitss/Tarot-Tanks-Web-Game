@@ -27,17 +27,25 @@ export class Player extends GameObject {
       playerTraits.speed,
       scene
     );
-    
+
     this.tarotConfig = tarotConfig;
     this.movement = [false, false, false, false];
     this.bullets = [];
     this.playerNum = playerNum;
     this.tag = TAGS.PLAYER;
     this.healthBar = healthBar;
+    this.invulnerable = false;
     this.Main();
   }
 
   Update(e) {
+    for(let powerup of this.scene.powerups){
+      if(this.isCollidingWith(powerup)){
+        console.log(this.pos.x,this.pos.y, powerup.pos.x,powerup.pos.y);
+        powerup.consume(this);
+      }
+    }
+
     if (this.isKeyDown()) {
       let { width, height } = this.getBounds();
       let pos = this.pos.add(this.forward.scale(this.speed));
@@ -72,7 +80,14 @@ export class Player extends GameObject {
   }
 
   Shoot() {
-    let bullet = new Bullet(this.x, this.y, 20 * this.tarotConfig.gameSpeed, this.scene, this.forward, TAGS.PLAYER);
+    let bullet = new Bullet(
+      this.x,
+      this.y,
+      20 * this.tarotConfig.gameSpeed,
+      this.scene,
+      this.forward,
+      TAGS.PLAYER
+    );
     this.stage.addChild(bullet);
     bullet.onDestroyed(this.handleBulletDestruction);
     bullet.onCollision(this.onBulletCollision);
@@ -106,11 +121,17 @@ export class Player extends GameObject {
   }
 
   takeDamage() {
+    if (this.invulnerable) return;
     this.health = Math.max(0, --this.health);
     this.healthBar.progress = this.health / 10;
     if (this.health <= 0) {
       this.dispatchEvent("playerDead");
     }
+  }
+
+  repair(){
+    this.health = Math.max(0, ++this.health);
+    this.healthBar.progress = this.health / 10;
   }
 
   Main() {
