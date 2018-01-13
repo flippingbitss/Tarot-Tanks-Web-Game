@@ -13,6 +13,7 @@ export class MenuScene extends Stage {
   }
 
   Main() {
+    Sound.stop()
     this.bgMusic = Sound.play("start_screen",Sound.INTERRUPT_NONE,1,0,1000);
 
     this.colors = ["yellow","red","pink","blue","orange","green"]
