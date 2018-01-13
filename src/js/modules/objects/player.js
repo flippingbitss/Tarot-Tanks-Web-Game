@@ -37,6 +37,7 @@ export class Player extends GameObject {
     this.tag = TAGS.PLAYER;
     this.healthBar = healthBar;
     this.invulnerable = false;
+    this.lastShootTime = Date.now();
     this.Main();
   }
 
@@ -82,6 +83,12 @@ export class Player extends GameObject {
   }
 
   Shoot() {
+    let now = Date.now();
+    if(now - this.lastShootTime < 800){
+      return;
+    }
+    
+    this.lastShootTime = now;
     let bullet = new Bullet(
       this.x,
       this.y,

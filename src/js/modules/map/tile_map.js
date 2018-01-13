@@ -67,7 +67,7 @@ export class TileMap {
     // ]
   }
 
-  getEmptyLocation(){
+  getEmptyLocation() {
     let randIndex;
     let maxIter = 50;
     let i = 0;
@@ -76,16 +76,27 @@ export class TileMap {
       i++;
     } while (this.grid[randIndex] != this.transformation["."] && i < maxIter);
 
+    let tile = this.getTileFromIndex(randIndex);
+
     return {
-      x: Math.floor(randIndex % this.cols) * TILE_SIZE,
-      y: Math.floor(randIndex / this.cols) * TILE_SIZE
-    }
-    
-  
+      x: tile.col * TILE_SIZE,
+      y: tile.row * TILE_SIZE
+    };
   }
-  
+
+  getTileFromIndex(index) {
+    return {
+      col: Math.floor(index % this.cols),
+      row: Math.floor(index / this.cols)
+    };
+  }
+
+  getIndex(row, col) {
+    return Math.floor(row * this.cols + col);
+  }
+
   getTileType(row, col) {
-    return this.grid[row * this.cols + col];
+    return this.grid[this.getIndex(row, col)];
   }
 
   getRow(y) {

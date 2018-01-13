@@ -16,7 +16,7 @@ export class WonScene extends Stage {
 
 
     // background
-    let background = new Bitmap(assetManager.getResult("menu_background"))
+    let background = new Bitmap(assetManager.getResult("won_background"))
     background.scaleX = 0.8;
     background.scaleY = 0.8;
     background.alpha = 0.8;

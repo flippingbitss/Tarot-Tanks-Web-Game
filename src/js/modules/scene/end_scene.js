@@ -17,7 +17,7 @@ export class EndScene extends Stage {
     let mainMenuButton = new LabelButton("Main Menu",30, FONT_FAMILY, "yellow", WIDTH / 2, HEIGHT / 2, true); 
 
     // background
-    let background = new Bitmap(assetManager.getResult("menu_background"))
+    let background = new Bitmap(assetManager.getResult("end_background"))
     background.scaleX = 0.8;
     background.scaleY = 0.8;
     background.alpha = 0.8;

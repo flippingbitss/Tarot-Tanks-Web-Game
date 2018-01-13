@@ -41,6 +41,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/js-priority-queue": "0.0.5",
     "@types/node": "^8.0.31",
     "babel-core": "^6.5.2",
     "babel-eslint": "^7.2.3",
@@ -78,6 +79,7 @@
   "private": true,
   "dependencies": {
     "createjs-module": "^0.8.2-beta",
+    "js-priority-queue": "^0.1.5",
     "npmlog": "^2.0.2"
   },
   "engines": {

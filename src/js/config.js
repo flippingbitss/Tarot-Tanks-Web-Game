@@ -27,7 +27,7 @@ export default {
       enemyTraits: {
         speed: 8,
         health: 10,
-        followRange: 300,
+        followRange: 500,
         pathfinding: false,
         sprite: "enemyGreen",
         enemies: [
@@ -82,7 +82,7 @@ export default {
       enemyTraits: {
         speed: 8,
         health: 15,
-        followRange: 400,
+        followRange: 550,
         pathfinding: false,
         sprite: "enemyGreen",
         enemies: [
@@ -133,7 +133,7 @@ export default {
       enemyTraits: {
         speed: 8,
         health: 20,
-        followRange: 400,
+        followRange: 600,
         pathfinding: false,
         sprite: "enemyGreen",
         enemies: [

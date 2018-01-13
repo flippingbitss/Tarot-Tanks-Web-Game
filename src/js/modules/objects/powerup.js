@@ -11,7 +11,6 @@ export class Powerup extends GameObject {
 
   consume(player) {
     if (!this.isUsed) {
-      console.log(player.playerNum, "consuming", this.traits.name);
       switch (this.traits.name) {
         case "Repair": {
           player.repair();

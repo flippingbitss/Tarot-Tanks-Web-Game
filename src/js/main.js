@@ -22,7 +22,7 @@ class Game {
 
   Init() {
     this.stage.enableMouseOver(20);
-    Ticker.framerate = 30;
+    Ticker.framerate = 60;
     Ticker.timingMode = Ticker.RAF;
     Ticker.on("tick", this.Update);
     window.game = this;

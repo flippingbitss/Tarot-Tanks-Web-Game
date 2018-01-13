@@ -28,6 +28,11 @@ export class MenuScene extends Stage {
     background.setBounds(0,0,FULL_WIDTH, FULL_HEIGHT)
 
 
+    let tint2 = new Shape()
+    tint2.graphics.beginStroke("orange").setStrokeStyle(2).beginFill("#00000066").drawRect(400,300,450,300).endFill().endStroke();
+    tint2.graphics.beginStroke("orange").setStrokeStyle(2).beginFill("#00000082").drawRect(300,75,650,150).endFill().endStroke();
+
+
     // title
     this.gameTitle = new Label("Tarot Tanks", 50, FONT_FAMILY, this.colors[0], WIDTH/2 , HEIGHT / 5 ,true);
     this.gameTitle.regX = 275;
@@ -71,6 +76,7 @@ export class MenuScene extends Stage {
     
     // this.stage.addChild(startButton);
     this.addChild(background);
+    this.addChild(tint2);
     this.addChild(this.gameTitle);
     this.addChild(startButton);
     this.addChild(instructionsButton);

@@ -13,6 +13,8 @@ export const MANIFEST = [
   { id: "player", src: "/assets/images/player_tank.png" },
   { id: "tile_set", src: "/assets/images/sprite_sheet.png" },
   { id: "menu_background", src: "/assets/images/menu_background.jpg" },
+  { id: "won_background", src: "/assets/images/tankWin.jpg" },
+  { id: "end_background", src: "/assets/images/tankWreck.jpg" },
   { id: "map_spritesheet", src: "/assets/images/map_spritesheet.png" },
   { id: "enemy", src: "/assets/images/enemyred.png" },
 

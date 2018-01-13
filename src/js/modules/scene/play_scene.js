@@ -68,7 +68,7 @@ export class PlayScene extends Stage {
     //   let element = this.ground.getChildAt(i);
     //   element.visible = this.inViewport(element.x, element.y);
     // }
-    if (this.tarotConfig.reviveEnemies) Util.doAtInterval(this.reviveEnemy, e, 3000);
+ //   if (this.tarotConfig.reviveEnemies) Util.doAtInterval(this.reviveEnemy, e, 3000);
     if (this.tarotConfig.enemiesRepair) Util.doAtInterval(this.repairEnemies, e, 2000);
 
     for (let player of this.players) player.Update(e);
@@ -199,7 +199,7 @@ export class PlayScene extends Stage {
         this.ground.addChild(tile);
       }
     }
-    //    this.ground.cache(0, 0, FULL_WIDTH, FULL_HEIGHT);
+    this.ground.cache(0, 0, FULL_WIDTH, FULL_HEIGHT);
   }
 
   handleTankDeath(e, deadTank, tanks) {
@@ -241,9 +241,9 @@ export class PlayScene extends Stage {
   startTarotCardSpawner() {
     let timer = () => {
       this.switchCard();
-      setTimeout(timer, Math.random() * 10000 + 12000);
+      setTimeout(timer, Math.random() * 5000 + 5000);
     };
-    setTimeout(timer, Math.random() * 10000 + 12000);
+    setTimeout(timer, Math.random() * 5000 + 5000);
   }
 
   switchCard() {
@@ -256,7 +256,6 @@ export class PlayScene extends Stage {
 
   applyCard(card) {
     let newConfig = { ...config.tarotsConfig.default, ...card.trait };
-    console.log(this.tarotConfig, newConfig);
     this.tarotConfig = newConfig;
 
     for (let p of this.players) p.tarotConfig = this.tarotConfig;
@@ -298,14 +297,16 @@ export class PlayScene extends Stage {
     let index = (y - 1) * this.tileMap.cols + x;
     let tile = this.ground.getChildAt(index);
     tile.gotoAndStop(this.tileMap.transformation["."]);
+
+    this.ground.updateCache("source-over");
   }
 
   startPowerupSpawner() {
     let timer = () => {
       this.spawnPowerup();
-      setTimeout(timer, this.tarotConfig.powerupSpawnRate * 1000);
+      setTimeout(timer, 25000 / this.tarotConfig.powerupSpawnRate );
     };
-    setTimeout(timer, this.tarotConfig.powerupSpawnRate * 1000);
+    setTimeout(timer, 25000 / this.tarotConfig.powerupSpawnRate );
   }
 
   spawnPowerup() {

@@ -102,6 +102,14 @@ export class Vector2 {
     return new Vector2(this.x, this.y);
   }
 
+  floor() {
+    return new Vector2(Math.floor(this.x), Math.floor(this.y));
+  }
+
+  round() {
+    return new Vector2(Math.round(this.x), Math.round(this.y));
+  }
+
   /**
    * @readonly
    * @memberof Vector2
@@ -183,13 +191,13 @@ export class Util {
     return (value - start) / (end - start) * (resultEnd - resultStart) + resultStart;
   }
 
-  static doAtInterval(callback, tick, rate) {
+  static doAtInterval(callback, tick, rate, ...args) {
     this.time = this.time || tick.time;
 
     let newTime = tick.time;
 
     if (newTime - this.time > rate) {
-      callback();
+      callback(...args);
       this.time = newTime;
     }
   }
